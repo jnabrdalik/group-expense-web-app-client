@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.tabs {
+  flex-grow: 6;
+}
+
+.groups {
+  flex-grow: 1;
+}
+
+mat-selection-list {
+  overflow: auto;
+  max-height: 80vh;
+}
+
+/* mat-selection-list::-webkit-scrollbar{
+  width: 5px;
+}
+
+mat-selection-list::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,.26);
+} */

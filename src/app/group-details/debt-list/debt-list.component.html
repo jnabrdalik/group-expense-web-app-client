@@ -1,0 +1,26 @@
+<mat-list>
+  <mat-list-item *ngFor="let debt of debts$ | async">
+    <div mat-line>
+      <div class="line">
+        <div>
+          {{debt.creditor.name}}
+        </div>
+        <div>
+          <mat-icon>arrow_right_alt</mat-icon>
+        </div>
+        <div>
+          {{debt.debtor.name}}
+        </div>
+        <div>
+          {{debt.amount / 100 | currency}}
+        </div>
+        <div>
+          <button mat-icon-button matTooltip="Oznacz jako zapłacone" (click)="markAsPaid(debt)">
+            <mat-icon>check</mat-icon>
+          </button>
+        </div>       
+      </div>
+    </div>    
+    <mat-divider></mat-divider>
+  </mat-list-item>
+</mat-list>

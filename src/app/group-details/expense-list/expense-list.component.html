@@ -1,0 +1,23 @@
+<mat-list>
+  <mat-list-item *ngFor="let expense of group?.expenses">
+    <mat-icon mat-list-icon>receipt</mat-icon>
+    <div mat-line>{{expense.description}}</div>
+    <div mat-line>Zapłacił: {{expense.payer.name}}</div>
+    <div mat-line>{{expense.amount / 100 | currency}}</div>
+    <div mat-line>Za: {{getPeopleInvolvedNames(expense)}} </div>
+    <div mat-line>Dodano: {{expense.timeAdded | date}}</div>
+    <button mat-icon-button matTooltip="Edytuj wydatek" (click)="editExpense(expense)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Usuń wydatek" (click)="deleteExpense(expense)">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+</mat-list>
+<div style="display: flex;">
+  <div style="flex: 1 1 auto;"></div>
+  <button mat-fab color="primary" class="add-button" (click)="addNewExpense()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

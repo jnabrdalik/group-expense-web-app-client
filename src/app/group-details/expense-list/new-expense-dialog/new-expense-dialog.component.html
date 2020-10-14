@@ -1,0 +1,35 @@
+<h1 mat-dialog-title>
+  {{input.title}}
+</h1>
+<div mat-dialog-content class="container">
+  <mat-form-field>
+    <mat-label>Opis wydatku</mat-label>
+    <input matInput [(ngModel)]="description">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Kwota</mat-label>
+    <input matInput [(ngModel)]="amount" type="number">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Kto zapłacił?</mat-label>
+    <mat-select [(ngModel)]="payer">
+      <mat-option *ngFor="let person of input.persons" [value]="person">
+        {{person.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>  
+  <h3>Za kogo?</h3>
+  <div *ngFor="let person of input.persons; let i = index">
+    <mat-checkbox [value]="person" [(ngModel)]="peopleSelected[i]">
+      {{person.name}}
+    </mat-checkbox>
+  </div>
+</div>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null">
+    Anuluj
+  </button>
+  <button mat-button [mat-dialog-close]="getResult()" [disabled]="isAddButtonDisabled()">
+    Zapisz
+  </button>
+</mat-dialog-actions>

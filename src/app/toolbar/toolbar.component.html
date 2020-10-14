@@ -1,0 +1,7 @@
+<mat-toolbar color="primary">
+    <span>LOGO</span>
+    <span class="spacer"></span>
+    <a *ngFor="let link of links" [routerLink]="link.route" mat-button>
+        {{link.label}}
+    </a>
+</mat-toolbar>
