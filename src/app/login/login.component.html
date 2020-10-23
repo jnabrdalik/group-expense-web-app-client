@@ -1,0 +1,26 @@
+<form (ngSubmit)="submit()">
+  <div class="container">
+    <h1 class="mat-headline">Zaloguj</h1>
+      <mat-form-field appearance="fill">
+        <mat-label>
+          Nazwa użytkownika
+        </mat-label>
+        <input matInput [(ngModel)]="username" name="username">
+      </mat-form-field>    
+      <mat-form-field appearance="fill">
+        <mat-label>
+          Hasło
+        </mat-label>        
+        <input matInput type="password" [(ngModel)]="password" name="password ">
+        <mat-hint *ngIf="usernameOrPasswordIncorrect" color="warn">Nazwa użytkownika lub hasło są niepoprawne</mat-hint>
+      </mat-form-field>
+      <div class="buttons">
+      <button mat-raised-button color="primary" type="submit" class="btn">
+        Zaloguj
+      </button>
+      <a mat-button color="primary" routerLink='/sign-up' class="btn">
+        Zarejestruj się
+      </a>
+      </div>
+    </div>  
+</form>

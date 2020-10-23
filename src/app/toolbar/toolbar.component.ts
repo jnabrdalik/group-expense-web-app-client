@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
-import { Link } from './link'
+import { Observable } from 'rxjs';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -8,20 +8,19 @@ import { Link } from './link'
   styleUrls: ['./toolbar.component.css']
 })
 export class ToolbarComponent implements OnInit {
-  links: Link[] = [
-    {
-      route: 'groups',
-      label: 'MOJE GRUPY'
-    },
-    {
-      route: 'account',
-      label: 'KONTO'
-    }
-  ]
+  
+  isAuthenticated$: Observable<boolean>;
 
-  constructor() { }
+  constructor(
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
+    this.isAuthenticated$ = this.userService.isAuthenticated$;
+  }
+
+  logout(): void {
+    this.userService.logout();
   }
 
 }

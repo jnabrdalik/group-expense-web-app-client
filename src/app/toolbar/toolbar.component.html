@@ -1,7 +1,17 @@
 <mat-toolbar color="primary">
     <span>LOGO</span>
     <span class="spacer"></span>
-    <a *ngFor="let link of links" [routerLink]="link.route" mat-button>
-        {{link.label}}
+    <a routerLink="groups" mat-button *ngIf="isAuthenticated$ | async">
+        MOJE GRUPY
+    </a>
+    <a routerLink="account" mat-button *ngIf="isAuthenticated$ | async">
+        KONTO
+    </a>
+    <button routerLink="groups" mat-button (click)="logout()" *ngIf="isAuthenticated$ | async">
+        WYLOGUJ
+    </button>
+
+    <a routerLink="login" mat-button *ngIf="!(isAuthenticated$ | async)">
+        ZALOGUJ
     </a>
 </mat-toolbar>

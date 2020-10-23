@@ -1,0 +1,32 @@
+<form (ngSubmit)="submit()">
+  <div class="container">
+    <h1 class="mat-headline">Zarejestruj się</h1>
+      <mat-form-field appearance="fill">
+        <mat-label>
+          Nazwa użytkownika
+        </mat-label>
+        <input matInput required [(ngModel)]="username" name="username">
+      </mat-form-field>
+    
+      <mat-form-field appearance="fill">
+        <mat-label>
+          Hasło
+        </mat-label>
+        <input matInput type="password" required [(ngModel)]="password" name="password">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>
+          Powtórz hasło
+        </mat-label>
+        <mat-error *ngIf="password !== repeatedPassword">Hasła muszą być takie same</mat-error>
+        <input matInput type="password" required [(ngModel)]="repeatedPassword" name="repeatedPassword">
+      </mat-form-field>
+    
+      <div>
+      <button mat-raised-button color="primary" type="submit">
+        Zarejestruj
+      </button>
+      </div>
+    </div>  
+</form>
