@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { UserService } from '../user.service';
 
@@ -15,10 +16,18 @@ export class LoginComponent implements OnInit {
   usernameOrPasswordIncorrect: boolean = false;
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.userService.isAuthenticated$.subscribe(
+      auth => {
+        if (auth) {          
+          this.router.navigate(['groups']);
+        }
+      }
+    )
   }
 
   submit() {

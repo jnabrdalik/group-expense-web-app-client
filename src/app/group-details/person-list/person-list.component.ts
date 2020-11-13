@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GroupService } from 'src/app/group.service';
 import { GroupDetails } from 'src/app/model/group-details';
 import { Person } from 'src/app/model/person';
-import { PersonService } from '../../person.service';
+import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog.component';
 import { NewPersonDialogComponent } from './new-person-dialog/new-person-dialog.component';
 
 @Component({
@@ -23,15 +23,51 @@ export class PersonListComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  getDisplayedName(person: Person) {
+    if (person.relatedUserName && person.relatedUserName !== person.name) {
+      return `${person.name} (${person.relatedUserName})`;
+    }
+    return person.name;
+
+  }
+
+  invite(): void {
+    this.dialog.open(InviteUserDialogComponent, {
+      width: '400px',
+      data: this.group.persons
+    });
+  }
+
   addNewPerson(): void {
     const dialogRef = this.dialog.open(NewPersonDialogComponent, {
-      data: this.group.persons
-    })
+      data: {
+        title: 'Dodaj osobę do grupy',
+        persons: this.group.persons
+      }
+    });
 
     dialogRef.afterClosed().subscribe(
       result => {
         if (result) {
           this.groupService.addPerson(result.name);
+        }
+      }
+    );
+  }
+
+  editPerson(person: Person) {
+    const dialogRef = this.dialog.open(NewPersonDialogComponent, {
+      data: {
+        title: 'Edytuj osobę',
+        editedPerson: person,
+        persons: this.group.persons
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(
+      result => {
+        if (result) {
+          this.groupService.editPerson(result);
         }
       }
     );

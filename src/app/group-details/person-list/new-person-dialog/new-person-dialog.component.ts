@@ -9,15 +9,25 @@ import { Person } from 'src/app/model/person';
 })
 export class NewPersonDialogComponent implements OnInit {
 
-  data: { name: string } = { name: '' };
+  name: string = '';
 
-  constructor(@Inject(MAT_DIALOG_DATA) private input: Person[]) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public input: { title: string, editedPerson?: Person, persons: Person[] }) { }
 
   ngOnInit(): void {
+    if (this.input.editedPerson) {
+      this.name = this.input.editedPerson.name.slice();
+    }
   }
 
   isAddButtonDisabled() {
-    return this.data.name.trim() === '' || this.input.some(p => p.name === this.data.name);
+    return this.name.trim() === '' || this.input.persons.some(p => p.name === this.name.trim());
+  }
+
+  getResult() {
+    return {
+      id: this.input.editedPerson?.id,
+      name: this.name.trim()
+    }
   }
 
 }

@@ -14,6 +14,8 @@ export class DebtListComponent implements OnInit {
   private groupId: number;
   debts$: Observable<Debt[]>;
 
+  displayedColumns: string[] = ['creditor', 'debtor', 'amount', 'actions']
+
   constructor(
     private groupService: GroupService,
     private route: ActivatedRoute

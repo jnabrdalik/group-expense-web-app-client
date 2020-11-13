@@ -1,17 +1,17 @@
 <h1 mat-dialog-title>
-  Dodaj osobę do grupy
+  {{input.title}}
 </h1>
 <div mat-dialog-content class="content">
     <mat-form-field>
       <mat-label>Imię</mat-label>
-      <input matInput [(ngModel)]="data.name">
+      <input matInput [(ngModel)]="name">
     </mat-form-field>
   </div>
 <div mat-dialog-actions align="end">
   <button mat-button [mat-dialog-close]="null">
     Anuluj
   </button>
-  <button mat-button [disabled]="isAddButtonDisabled()" [mat-dialog-close]="data">
+  <button mat-button [disabled]="isAddButtonDisabled()" [mat-dialog-close]="getResult()">
     Dodaj
   </button>
 </div>

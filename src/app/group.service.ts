@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 
 import { environment } from '../environments/environment';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Group } from './model/group';
 import { GroupDetails } from './model/group-details';
 import { Debt } from './model/debt';
@@ -30,12 +29,9 @@ export class GroupService {
     this.apiUrl = environment.apiUrl;
   }
 
-  getGroupList(): Observable<Group[]> {
-    if (this.groups.value.length === 0) {
-      this.http.get<Group[]>(`${this.apiUrl}/group`).subscribe(
-        response => this.groups.next(response)
-      );
-    }
+  getGroupList(): Observable<Group[]> {    
+    this.http.get<Group[]>(`${this.apiUrl}/group`).subscribe(
+      response => this.groups.next(response));    
 
     return this.groups.asObservable();
   }
@@ -44,20 +40,27 @@ export class GroupService {
     if (this.currentGroupId !== id) {
       this.currentGroupId = id;
       this.http.get<GroupDetails>(`${this.apiUrl}/group/${id}`).subscribe(
-        response => this.groupDetails.next(response)
+        response => {
+          this.groupDetails.next(response);
+          this.sortExpenses();
+        }
       );
     }
     
     return this.groupDetails.asObservable();
   }
 
+  private sortExpenses(): void {
+    this.groupDetails.value.expenses.sort((a, b) => b.timestamp - a.timestamp);
+  }
+
   getCurrentGroupId(): number {
     return this.currentGroupId;
   }
 
-  addGroup(name: string, description: string): void {
+  addGroup(name: string): void {
     this.http.post<Group>(`${this.apiUrl}/group`, {
-      name, description
+      name
     }).subscribe(
       response => {
         const groups = this.groups.value;
@@ -70,8 +73,7 @@ export class GroupService {
 
   editGroup(group: Group): void {
     this.http.put<Group>(`${this.apiUrl}/group/${group.id}`, {
-      name: group.name,
-      description: group.description
+      name: group.name
     }).subscribe(
       response => {
         const groups = this.groups.value;
@@ -81,17 +83,16 @@ export class GroupService {
 
         const group = this.groupDetails.value;
         group.name = response.name;
-        group.description = response.description;
         this.groupDetails.next(group);
       }
     )
   }
   
-  deleteGroup(group: Group) {
-    this.http.delete(`${this.apiUrl}/group/${group.id}`).subscribe(
+  deleteGroup(groupId: number) {
+    this.http.delete(`${this.apiUrl}/group/${groupId}`).subscribe(
       _ => {
         const groups = this.groups.value;
-        const index = groups.indexOf(group);
+        const index = groups.findIndex(g => g.id = groupId);
         groups.splice(index, 1);
         this.groups.next(groups);
         this.router.navigate(groups.length > 0 ? ['groups', groups[0].id] : ['']);
@@ -99,10 +100,11 @@ export class GroupService {
     )
   }
 
-  addPerson(name: string): void {
+  addPerson(name: string, relatedUserId: number = 0): void {
     this.http.post<Person>(`${this.apiUrl}/person`, {
       groupId: this.currentGroupId,
-      name
+      name,
+      relatedUserId
     }).subscribe(
       response => {
         const group = this.groupDetails.value;
@@ -127,7 +129,8 @@ export class GroupService {
   }
 
   canDeletePerson(person: Person): boolean {
-    return !this.groupDetails.value.expenses.some(e => e.payer.id === person.id || e.peopleInvolved.some(p => p.id === person.id));
+    return this.groupDetails.value.creatorUserName !== person.relatedUserName &&
+     (!this.groupDetails.value.expenses.some(e => e.payer.id === person.id || e.payees.some(p => p.id === person.id)));
   }
 
   deletePerson(person: Person): void {
@@ -142,18 +145,20 @@ export class GroupService {
     )
   }
 
-  addExpense(description: string, amount: number, payer: Person, peopleInvolved: Person[]) {
+  addExpense(description: string, amount: number, timestamp: number, payer: Person, payees: Person[]) {
     this.http.post<Expense>(`${this.apiUrl}/expense`, {
       groupId: this.currentGroupId,
       description,
       amount,
       payerId: payer.id,
-      peopleInvolvedIds: peopleInvolved.map(p => p.id)
+      payeesIds: payees.map(p => p.id),
+      timestamp
     }).subscribe(
       response => {
         const group = this.groupDetails.value;
         group.expenses.push(response);
         this.groupDetails.next(group);
+        this.sortExpenses();
       }
     );
   }
@@ -163,13 +168,15 @@ export class GroupService {
       description: expense.description,
       amount: expense.amount,
       payerId: expense.payer.id,
-      peopleInvolvedIds: expense.peopleInvolved.map(p => p.id)
+      payeesIds: expense.payees.map(p => p.id),
+      timestamp: expense.timestamp
     }).subscribe(
       response => {
         const group = this.groupDetails.value;
         const index = group.expenses.findIndex(e => e.id === response.id);
         group.expenses[index] = response;
         this.groupDetails.next(group);
+        this.sortExpenses();
       }
     );
   }
@@ -195,7 +202,9 @@ export class GroupService {
   }
 
   markDebtAsPaid(debt: Debt) {
-    this.addExpense('SPŁATA', debt.amount, debt.debtor, [debt.creditor]);
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    this.addExpense('SPŁATA', debt.amount, (new Date()).getTime(), debt.debtor, [debt.creditor]);
     const debts = this.debts.value;
     const index = debts.indexOf(debt);
     debts.splice(index, 1);

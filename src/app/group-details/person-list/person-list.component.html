@@ -1,16 +1,26 @@
-<mat-list>
-  <mat-list-item *ngFor="let person of group?.persons">
-    <mat-icon mat-list-icon>person</mat-icon>
-    <div mat-line>{{person.name}}</div>
-    <button mat-icon-button *ngIf="canDeletePerson(person)" (click)="deletePerson(person)" matTooltip="Usuń osobę">
-      <mat-icon>delete</mat-icon>
+
+<mat-card>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item *ngFor="let person of group?.persons">
+        <mat-icon mat-list-icon>person</mat-icon>
+        <div mat-line>{{ getDisplayedName(person) }}</div>
+        <button mat-icon-button (click)="editPerson(person)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="canDeletePerson(person)" (click)="deletePerson(person)" matTooltip="Usuń osobę">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <mat-divider></mat-divider>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="invite()" class="add-button">
+      Zaproś do grupy
     </button>
-    <mat-divider></mat-divider>
-  </mat-list-item>
-</mat-list>
-<div style="display: flex;">
-  <div style="flex: 1 1 auto;"></div>
-  <button mat-fab color="primary" class="add-button" matTooltip="Dodaj osobę" (click)="addNewPerson()">
-    <mat-icon>add</mat-icon>
-  </button>
-</div>
+    <button mat-button color="primary" (click)="addNewPerson()" class="add-button">
+      Dodaj ręcznie
+    </button>
+  </mat-card-actions>
+</mat-card>

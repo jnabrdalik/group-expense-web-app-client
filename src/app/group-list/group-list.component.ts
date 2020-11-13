@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { GroupService } from '../group.service';
@@ -37,34 +36,9 @@ export class GroupListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(
       result => {
         if (result) {
-          this.groupService.addGroup(result.name, result.description)
+          this.groupService.addGroup(result.name)
         }
       }
     );
   }
-
-  editGroup(group: Group) {
-    const dialogRef = this.dialog.open(NewGroupDialogComponent, {
-      data: {
-        title: 'Edytuj grupę',
-        group
-      },
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(
-      result => {
-        if (result) {
-          this.groupService.editGroup(result)
-        }
-      }
-    );
-  }
-
-  deleteGroup(group: Group) {
-    // warning TODO
-
-    this.groupService.deleteGroup(group);
-  }
-
 }
