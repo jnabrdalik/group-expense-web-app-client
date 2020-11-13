@@ -5,15 +5,14 @@
       <a mat-list-item *ngFor="let group of groups$ | async; last as last" [routerLink]="[group.id]">
         <mat-icon mat-list-icon>group</mat-icon>
         <div mat-line>{{group.name}}</div>
-        <div mat-line>{{group.description}}</div>
         <div mat-line>Utworzono: {{group.timeCreated | date}}</div>
-        <button mat-icon-button matTooltip="Opcje" [matMenuTriggerFor]="menu">
+        <!-- <button mat-icon-button matTooltip="Opcje" [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="deleteGroup(group)">Usuń grupę</button>
           <button mat-menu-item (click)="editGroup(group)">Edytuj grupę</button>
-        </mat-menu>
+        </mat-menu> -->
         <mat-divider *ngIf="!last"></mat-divider>
       </a>
     </mat-nav-list>

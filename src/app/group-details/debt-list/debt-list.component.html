@@ -1,26 +1,31 @@
-<mat-list>
-  <mat-list-item *ngFor="let debt of debts$ | async">
-    <div mat-line>
-      <div class="line">
-        <div>
-          {{debt.creditor.name}}
-        </div>
-        <div>
-          <mat-icon>arrow_right_alt</mat-icon>
-        </div>
-        <div>
-          {{debt.debtor.name}}
-        </div>
-        <div>
-          {{debt.amount / 100 | currency}}
-        </div>
-        <div>
-          <button mat-icon-button matTooltip="Oznacz jako zapłacone" (click)="markAsPaid(debt)">
-            <mat-icon>check</mat-icon>
-          </button>
-        </div>       
+<table mat-table [dataSource]="debts$" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="creditor">
+    <th mat-header-cell *matHeaderCellDef> Kto jest dłużny? </th>
+    <td mat-cell *matCellDef="let debt"> {{debt.creditor.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="debtor">
+    <th mat-header-cell *matHeaderCellDef> Komu? </th>
+    <td mat-cell *matCellDef="let debt"> {{debt.debtor.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="amount">
+    <th mat-header-cell *matHeaderCellDef> Ile? </th>
+    <td mat-cell *matCellDef="let debt"> {{debt.amount / 100 | currency}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let debt">
+      <div>
+        <button mat-icon-button matTooltip="Oznacz jako zapłacone" (click)="markAsPaid(debt)">
+          <mat-icon>check</mat-icon>
+        </button>
       </div>
-    </div>    
-    <mat-divider></mat-divider>
-  </mat-list-item>
-</mat-list>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

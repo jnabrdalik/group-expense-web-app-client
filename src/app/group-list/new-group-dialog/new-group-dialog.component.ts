@@ -9,7 +9,6 @@ import { Group } from 'src/app/model/group';
 })
 export class NewGroupDialogComponent implements OnInit {
   name: string = '';
-  description: string = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public input: { title: string, group?: Group }
@@ -18,23 +17,19 @@ export class NewGroupDialogComponent implements OnInit {
   ngOnInit(): void {
     if (this.input.group) {
       this.name = this.input.group.name.slice();
-      this.description = this.input.group.description.slice();
     }
   }
 
   isAddButtonDisabled() {
     return this.name.trim().length === 0 ||
-    this.description.trim().length === 0 ||
     this.input.group &&
-    this.name.trim() === this.input.group.name &&
-    this.description.trim() === this.input.group.description;
+    this.name.trim() === this.input.group.name;
   }
 
   getResult() {
     return {
       id: this.input.group?.id,
-      name: this.name,
-      description: this.description
+      name: this.name
     }
   }
 

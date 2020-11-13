@@ -3,12 +3,18 @@
 </h1>
 <div mat-dialog-content class="container">
   <mat-form-field>
-    <mat-label>Opis wydatku</mat-label>
+    <mat-label>Za co?</mat-label>
     <input matInput [(ngModel)]="description">
   </mat-form-field>
   <mat-form-field>
-    <mat-label>Kwota</mat-label>
+    <mat-label>Ile?</mat-label>
     <input matInput [(ngModel)]="amount" type="number">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Kiedy?</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="date">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Kto zapłacił?</mat-label>

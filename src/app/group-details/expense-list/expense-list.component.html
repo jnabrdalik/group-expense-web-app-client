@@ -1,20 +1,85 @@
 <mat-list>
-  <mat-list-item *ngFor="let expense of group?.expenses">
-    <mat-icon mat-list-icon>receipt</mat-icon>
-    <div mat-line>{{expense.description}}</div>
-    <div mat-line>Zapłacił: {{expense.payer.name}}</div>
-    <div mat-line>{{expense.amount / 100 | currency}}</div>
-    <div mat-line>Za: {{getPeopleInvolvedNames(expense)}} </div>
-    <div mat-line>Dodano: {{expense.timeAdded | date}}</div>
-    <button mat-icon-button matTooltip="Edytuj wydatek" (click)="editExpense(expense)">
-      <mat-icon>edit</mat-icon>
-    </button>
-    <button mat-icon-button matTooltip="Usuń wydatek" (click)="deleteExpense(expense)">
-      <mat-icon>delete</mat-icon>
-    </button>
-    <mat-divider></mat-divider>
-  </mat-list-item>
+  <div *ngFor="let expense of group?.expenses; let i = index; let first = first">
+    <!-- <div matSubheader *ngIf="first || haveDifferentDate(expense, group?.expenses[i - 1])">
+      {{expense.timestamp| date}}
+    </div> -->
+    <mat-list-item>
+      <div>
+        <div mat-line><b>{{expense.description}}</b></div>
+        <div mat-line>{{expense.timestamp| date}}</div>
+      </div>
+      <div fxFlex></div>
+      <div align="end">
+        <div mat-line><b>{{expense.amount / 100 | currency}}</b></div>
+        <div mat-line>{{expense.payer.name}} zapłacił(a) za: {{getPayeesNames(expense)}}</div>
+        <!-- <div mat-line></div> -->
+      </div>
+      <div class="buttons">
+        <button mat-icon-button matTooltip="Edytuj wydatek" (click)="editExpense(expense)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button color="warn" mat-icon-button matTooltip="Usuń wydatek" (click)="deleteExpense(expense)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>    
+      <mat-divider ></mat-divider>
+    </mat-list-item>
+    <!-- <mat-expansion-panel>
+      <mat-expansion-panel-header>sdsds</mat-expansion-panel-header>
+      <mat-ex
+    </mat-expansion-panel> -->
+  </div>
+  
 </mat-list>
+
+
+<!-- <table mat-table [dataSource]="group?.expenses">
+
+  <ng-container matColumnDef="description">
+    <th mat-header-cell *matHeaderCellDef> Opis </th>
+    <td mat-cell *matCellDef="let expense"> {{expense.description}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="amount">
+    <th mat-header-cell *matHeaderCellDef> Kwota </th>
+    <td mat-cell *matCellDef="let expense"> {{expense.amount / 100 | currency}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="payer">
+    <th mat-header-cell *matHeaderCellDef> Zapłacił </th>
+    <td mat-cell *matCellDef="let expense"> {{expense.payer.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="payees">
+    <th mat-header-cell *matHeaderCellDef> Za kogo </th>
+    <td mat-cell *matCellDef="let expense"> {{getPayeesNames(expense)}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="timestamp">
+    <th mat-header-cell *matHeaderCellDef> Data </th>
+    <td mat-cell *matCellDef="let expense"> {{expense.timestamp| date}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let expense">
+      <div>
+        <button mat-button (click)="editExpense(expense)">
+          Edytuj
+        </button>
+        <button color="warn" mat-button (click)="deleteExpense(expense)">
+          Usuń
+        </button>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table> -->
+
+
+
 <div style="display: flex;">
   <div style="flex: 1 1 auto;"></div>
   <button mat-fab color="primary" class="add-button" (click)="addNewExpense()">

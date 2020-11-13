@@ -1,4 +1,6 @@
-<mat-tab-group animationDuration="0ms">
+<app-group-header [group]="groupDetails$ | async"></app-group-header>
+<mat-divider></mat-divider>
+<mat-tab-group animationDuration="0ms" class="">
   <mat-tab label="Wydatki">
     <app-expense-list [group]="groupDetails$ | async"></app-expense-list>
   </mat-tab>

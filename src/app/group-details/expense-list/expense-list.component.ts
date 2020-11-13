@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { GroupService } from 'src/app/group.service';
 import { Expense } from 'src/app/model/expense';
 import { GroupDetails } from 'src/app/model/group-details';
-import { Person } from 'src/app/model/person';
 import { NewExpenseDialogComponent } from './new-expense-dialog/new-expense-dialog.component';
 
 @Component({
@@ -14,6 +13,7 @@ import { NewExpenseDialogComponent } from './new-expense-dialog/new-expense-dial
 export class ExpenseListComponent implements OnInit {
 
   @Input() group: GroupDetails;
+  displayedColumns: string[] = ['description', 'amount', 'payer', 'payees', 'timestamp', 'actions']
 
   constructor(
     private groupService: GroupService,
@@ -23,8 +23,17 @@ export class ExpenseListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getPeopleInvolvedNames(expense: Expense) {
-    return expense.peopleInvolved.map(p => p.name).sort((a, b) => a.localeCompare(b)).join(', ')
+  getPayeesNames(expense: Expense) {
+    return expense.payees.map(p => p.name).sort((a, b) => a.localeCompare(b)).join(', ')
+  }
+
+  haveDifferentDate(e1: Expense, e2: Expense): boolean {
+    const d1 = new Date(e1.timestamp);
+    d1.setHours(0, 0, 0, 0);
+    const d2 = new Date(e2.timestamp);
+    d2.setHours(0, 0, 0, 0);
+
+    return d1.getTime() !== d2.getTime();
   }
 
   addNewExpense(): void {
@@ -39,7 +48,7 @@ export class ExpenseListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(
       result => {
         if (result) {
-          this.groupService.addExpense(result.description, result.amount, result.payer, result.peopleInvolved);
+          this.groupService.addExpense(result.description, result.amount, result.timestamp, result.payer, result.payees);
         }
       }
     )
