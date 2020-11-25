@@ -1,8 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatAccordion, MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
+import { Observable } from 'rxjs';
 import { GroupService } from 'src/app/group.service';
-import { Expense } from 'src/app/model/expense';
-import { GroupDetails } from 'src/app/model/group-details';
+import { Expense, ExpenseChange } from 'src/app/model/expense';
+import { GroupDetails } from 'src/app/model/group';
 import { NewExpenseDialogComponent } from './new-expense-dialog/new-expense-dialog.component';
 
 @Component({
@@ -13,7 +16,9 @@ import { NewExpenseDialogComponent } from './new-expense-dialog/new-expense-dial
 export class ExpenseListComponent implements OnInit {
 
   @Input() group: GroupDetails;
-  displayedColumns: string[] = ['description', 'amount', 'payer', 'payees', 'timestamp', 'actions']
+  displayedColumns: string[] = ['description', 'amount', 'payer', 'payees', 'timestamp', 'actions'];
+
+  expenseChanges$: Observable<ExpenseChange[]>;
 
   constructor(
     private groupService: GroupService,
@@ -21,10 +26,43 @@ export class ExpenseListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.expenseChanges$ = this.groupService.expenseChanges$;
   }
 
-  getPayeesNames(expense: Expense) {
+  getPayeesNames(expense: Expense): string {
+    // if (expense.payees.length === this.group.persons.length) {
+    //   return " wszystkich";
+    // }
+    // else if (expense.payees.length >= this.group.persons.length / 2) {
+    //   return " wszystkich poza: " +
+    //     this.group.persons.filter(p1 => expense.payees.every(p2 => p1.name !== p2.name)).map(p => p.name).sort((a, b) => a.localeCompare(b)).join(', ');
+    // }
+
     return expense.payees.map(p => p.name).sort((a, b) => a.localeCompare(b)).join(', ')
+  }
+
+  getFieldName(field: string): string {
+    var fieldName: string;
+
+    switch (field) {
+      case 'amount':
+        fieldName = 'Kwotę ';
+        break;
+      case 'description':
+        fieldName = 'Opis ';
+        break;
+      case 'timestamp':
+        fieldName = 'Datę ';
+        break;
+      case 'payer':
+        fieldName = 'Płatnika ';
+        break;
+      case 'payees':
+        fieldName = 'Listę dłużników ';
+        break;     
+    }
+
+    return fieldName;
   }
 
   haveDifferentDate(e1: Expense, e2: Expense): boolean {
@@ -40,7 +78,7 @@ export class ExpenseListComponent implements OnInit {
     const dialogRef = this.dialog.open(NewExpenseDialogComponent, {
       data: {
         title: "Dodaj wydatek",
-        persons: this.group.persons
+        users: this.group.users
       },
       disableClose: true
     });
@@ -54,11 +92,16 @@ export class ExpenseListComponent implements OnInit {
     )
   }
 
-  editExpense(expense: Expense): void {
+  revertLastChange(expense: Expense, panel: MatExpansionPanel): void {
+    this.groupService.revertLastChange(expense);
+    panel.close();
+  }
+
+  editExpense(expense: Expense, panel: MatExpansionPanel): void {
     const dialogRef = this.dialog.open(NewExpenseDialogComponent, {
       data: {
         title: "Edytuj wydatek",
-        persons: this.group.persons,
+        users: this.group.users,
         editedExpense: expense
       },
       disableClose: true
@@ -67,16 +110,22 @@ export class ExpenseListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(
       result => {
         if (result) {
-          this.groupService.editExpense(result)
+          this.groupService.editExpense(result);
+          panel.close();
         }
       }
-    )
+    );
+
   }
 
   deleteExpense(expense: Expense): void {
     // warning TODO
 
     this.groupService.deleteExpense(expense);
+  }
+
+  downloadExpenseHistory(expense: Expense) {
+    this.groupService.downloadExpenseHistory(expense);
   }
 
 }

@@ -1,4 +1,44 @@
-<h1>{{group?.name}}</h1>
-<div fxFlex></div>
-<button mat-button (click)="editGroup(group)">Edytuj nazwę</button>
-<button mat-button color="warn" (click)="deleteGroup(group)">Usuń grupę</button>
+<div>
+    <div>
+        <!-- <h1><mat-icon inline="true">group</mat-icon> {{group?.name}}</h1> -->
+        <!-- <div class="mat-display-1" style="margin: 10px;">Grupa testowa</div> -->
+        <!-- <mat-divider></mat-divider> -->
+        
+    </div>
+    <div class="buttons">
+        <!-- <button mat-button>Dodaj członka</button>  -->
+        <div class="mat-headline" style="margin: 15px;"><mat-icon inline="true">group</mat-icon><b> Wyjazd nad morze bardzo długa nazwa</b></div>
+        <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Opcje grupy" color="primary">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        <div fxFlex></div>
+        <button mat-mini-fab color="primary" matTooltip="Dodaj wydatek"><mat-icon>playlist_add</mat-icon></button>
+        
+        <button mat-mini-fab color="primary" [matMenuTriggerFor]="menu"  matTooltip="Dodaj członka grupy"><mat-icon>person_add</mat-icon></button>
+
+        <mat-divider [vertical]="true"></mat-divider>
+        
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+              <mat-icon>edit</mat-icon>
+              <span>Edytuj grupę</span>
+            </button>
+            <button mat-menu-item disabled>
+              <mat-icon>archive</mat-icon>
+              <span>Archiwizuj grupę</span>
+            </button>
+            <button mat-menu-item color="warn">
+              <mat-icon color="warn">delete</mat-icon>
+              <span>Usuń grupę</span>
+            </button>
+          </mat-menu>
+        <!-- <div matTooltip="Najpierw dodaj minimum 2 członków" [matTooltipDisabled]="!addBtn.disabled">
+            <button mat-raised-button color="primary" [disabled]="group?.users.length < 2" #addBtn>Dodaj wydatek</button> 
+        </div>    
+        <div fxFlex></div> -->
+        <!-- <button mat-button (click)="editGroup(group)">Edytuj</button>
+        <button mat-button color="warn" (click)="deleteGroup(group)">Usuń grupę</button> -->
+        <!-- <button mat-icon-button><mat-icon>more_vert</mat-icon></button> -->
+    </div>
+</div>
+

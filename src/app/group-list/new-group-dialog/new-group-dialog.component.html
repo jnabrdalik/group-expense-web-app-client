@@ -6,6 +6,9 @@
       <mat-label>Nazwa grupy</mat-label>
       <input matInput [(ngModel)]="name">
     </mat-form-field>
+    <mat-checkbox [(ngModel)]="registeredOnly">
+      Prywatna
+    </mat-checkbox>
   </div>
 <div mat-dialog-actions align="end">
   <button mat-button [mat-dialog-close]="null">

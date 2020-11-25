@@ -2,14 +2,17 @@
 <mat-card>
   <mat-card-content>
     <mat-list>
-      <mat-list-item *ngFor="let person of group?.persons">
+      <mat-list-item *ngFor="let user of group?.users">
+        
         <mat-icon mat-list-icon>person</mat-icon>
-        <div mat-line>{{ getDisplayedName(person) }}</div>
-        <button mat-icon-button (click)="editPerson(person)">
+        <div mat-line>{{user.name}}</div>       
+        <div mat-line *ngIf="user.balance !== 0" [ngStyle]="{'color': user.balance > 0 ? 'green' : 'red'}">{{user.balance / 100 | currency}}</div>
+        <div mat-line *ngIf="user.balance === 0" color="primary">Rozliczony</div>        
+        <!-- <button color="primary" mat-icon-button (click)="edituser(user)">
           <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="canDeletePerson(person)" (click)="deletePerson(person)" matTooltip="Usuń osobę">
-          <mat-icon>delete</mat-icon>
+        </button> -->
+        <button color="warn" mat-icon-button *ngIf="canDeleteUserFromGroup(user)" (click)="deleteUserFromGroup(user)" matTooltip="Usuń z grupy">
+          <mat-icon>close</mat-icon>
         </button>
         <mat-divider></mat-divider>
       </mat-list-item>
@@ -19,8 +22,8 @@
     <button mat-raised-button color="primary" (click)="invite()" class="add-button">
       Zaproś do grupy
     </button>
-    <button mat-button color="primary" (click)="addNewPerson()" class="add-button">
+    <!-- <button mat-button color="primary" (click)="addNewPerson()" class="add-button">
       Dodaj ręcznie
-    </button>
+    </button> -->
   </mat-card-actions>
 </mat-card>

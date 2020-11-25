@@ -16,7 +16,6 @@ import { PersonListComponent } from './group-details/person-list/person-list.com
 import { NewGroupDialogComponent } from './group-list/new-group-dialog/new-group-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DebtListComponent } from './group-details/debt-list/debt-list.component';
-import { NewPersonDialogComponent } from './group-details/person-list/new-person-dialog/new-person-dialog.component';
 import { NewExpenseDialogComponent } from './group-details/expense-list/new-expense-dialog/new-expense-dialog.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { LoginComponent } from './login/login.component';
@@ -25,6 +24,7 @@ import { GroupHeaderComponent } from './group-details/group-header/group-header.
 
 import { registerLocaleData } from '@angular/common';
 import localePl from '@angular/common/locales/pl';
+import { GroupsComponent } from './groups/groups.component';
 
 registerLocaleData(localePl);
 
@@ -38,12 +38,12 @@ registerLocaleData(localePl);
     PersonListComponent,
     NewGroupDialogComponent,
     DebtListComponent,
-    NewPersonDialogComponent,
     NewExpenseDialogComponent,
     SignUpComponent,
     LoginComponent,
     InviteUserDialogComponent,
-    GroupHeaderComponent
+    GroupHeaderComponent,
+    GroupsComponent
   ],
   imports: [
     BrowserModule,

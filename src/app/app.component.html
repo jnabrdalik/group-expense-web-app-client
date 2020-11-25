@@ -1,9 +1,9 @@
+<app-toolbar [drawer]="drawer"></app-toolbar>
 <mat-sidenav-container>
-    <mat-sidenav>
-
+    <mat-sidenav #drawer>
+        <app-group-list></app-group-list>
     </mat-sidenav>
-    <mat-sidenav-content>
-        <app-toolbar></app-toolbar>
+    <mat-sidenav-content>           
         <router-outlet></router-outlet>
     </mat-sidenav-content>
 </mat-sidenav-container>

@@ -1,25 +1,7 @@
-.container {
-  display: flex;
-  flex-direction: row;
+.active {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
-.tabs {
-  flex-grow: 6;
+.active .mat-line {
+    font-weight: bold;
 }
-
-.groups {
-  flex-grow: 1;
-}
-
-mat-selection-list {
-  overflow: auto;
-  max-height: 80vh;
-}
-
-/* mat-selection-list::-webkit-scrollbar{
-  width: 5px;
-}
-
-mat-selection-list::-webkit-scrollbar-thumb{
-  background: rgba(0,0,0,.26);
-} */

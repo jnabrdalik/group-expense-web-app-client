@@ -19,13 +19,13 @@
   <mat-form-field>
     <mat-label>Kto zapłacił?</mat-label>
     <mat-select [(ngModel)]="payer">
-      <mat-option *ngFor="let person of input.persons" [value]="person">
+      <mat-option *ngFor="let person of input.users" [value]="person">
         {{person.name}}
       </mat-option>
     </mat-select>
   </mat-form-field>  
   <h3>Za kogo?</h3>
-  <div *ngFor="let person of input.persons; let i = index">
+  <div *ngFor="let person of input.users; let i = index">
     <mat-checkbox [value]="person" [(ngModel)]="peopleSelected[i]">
       {{person.name}}
     </mat-checkbox>

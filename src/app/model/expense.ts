@@ -1,10 +1,22 @@
-import { Person } from './person';
+import { User } from './user';
 
-export class Expense {
+export interface Expense {
   id: number;
   description: string;
   amount: number;
-  payer: Person;
-  payees: Person[];
+  payer: User;
+  payees: User[];
   timestamp: number;
+}
+
+export interface ExpenseChange {
+  changedBy: User;
+  changeTimestamp: number;
+  changes: {
+    fieldName: string;
+    valueBefore: string;
+    valueAfter: string;
+  }[]
+
+  
 }

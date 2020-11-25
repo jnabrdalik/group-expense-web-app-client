@@ -1,5 +1,8 @@
-<mat-toolbar color="primary">
-    <span>LOGO</span>
+<mat-toolbar color="primary" class="mat-elevation-z8">
+    <button mat-icon-button (click)="drawer.toggle()" *ngIf="(isHandset$ | async) && (isAuthenticated$ | async)">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>Rozliczanie wydatków</span>
     <span class="spacer"></span>
     <a routerLink="groups" mat-button *ngIf="isAuthenticated$ | async">
         MOJE GRUPY

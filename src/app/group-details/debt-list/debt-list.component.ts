@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { GroupService } from 'src/app/group.service';
 import { Debt } from 'src/app/model/debt';
 
@@ -9,12 +9,14 @@ import { Debt } from 'src/app/model/debt';
   templateUrl: './debt-list.component.html',
   styleUrls: ['./debt-list.component.css']
 })
-export class DebtListComponent implements OnInit {
+export class DebtListComponent implements OnInit, OnDestroy {
 
   private groupId: number;
   debts$: Observable<Debt[]>;
 
-  displayedColumns: string[] = ['creditor', 'debtor', 'amount', 'actions']
+  displayedColumns: string[] = ['creditor', 'debtor', 'amount', 'actions'];
+
+  private subscription: Subscription;
 
   constructor(
     private groupService: GroupService,
@@ -22,7 +24,7 @@ export class DebtListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(
+    this.subscription = this.route.paramMap.subscribe(
       params => {
         this.groupId = +params.get('id');
         this.debts$ = this.groupService.getDebts(this.groupId);
@@ -32,6 +34,10 @@ export class DebtListComponent implements OnInit {
 
   markAsPaid(debt: Debt) {
     this.groupService.markDebtAsPaid(debt);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

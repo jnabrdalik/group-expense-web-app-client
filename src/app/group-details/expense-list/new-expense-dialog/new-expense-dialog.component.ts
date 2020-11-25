@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Expense } from 'src/app/model/expense';
-import { Person } from 'src/app/model/person';
+import { User } from 'src/app/model/user';
 
 @Component({
   selector: 'app-new-expense-dialog',
@@ -12,12 +12,12 @@ export class NewExpenseDialogComponent implements OnInit {
   
   description: string = '';
   amount: number;
-  payer: Person;
+  payer: User;
   peopleSelected: boolean[];
   date: Date
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public input: { title: string, editedExpense?: Expense, persons: Person[] } 
+    @Inject(MAT_DIALOG_DATA) public input: { title: string, editedExpense?: Expense, users: User[] } 
     ) {}
 
   ngOnInit() {
@@ -27,13 +27,13 @@ export class NewExpenseDialogComponent implements OnInit {
       this.description = expense.description.slice();
       this.amount = expense.amount / 100;
       this.date = new Date(expense.timestamp);
-      this.payer = this.input.persons.find(e => e.id === expense.payer.id);
-      this.peopleSelected = this.input.persons.map(p1 => expense.payees.some(p2 => p1.id === p2.id))
+      this.payer = this.input.users.find(e => e.id === expense.payer.id);
+      this.peopleSelected = this.input.users.map(p1 => expense.payees.some(p2 => p1.id === p2.id))
     }
     else {
       this.date = new Date();
       this.date.setHours(0, 0, 0, 0);
-      this.peopleSelected = this.input.persons.map(_ => false);
+      this.peopleSelected = this.input.users.map(_ => false);
     }
     
   }
@@ -53,7 +53,7 @@ export class NewExpenseDialogComponent implements OnInit {
     Math.round(this.amount * 100) === expense.amount &&
     this.date.getTime() === expense.timestamp &&
     this.payer.id === expense.payer.id &&
-    this.peopleSelected.every((v, i) => v === this.input.persons.map(p1 => expense.payees.some(p2 => p1.id === p2.id))[i])
+    this.peopleSelected.every((v, i) => v === this.input.users.map(p1 => expense.payees.some(p2 => p1.id === p2.id))[i])
   }
 
   getResult() {
@@ -63,7 +63,7 @@ export class NewExpenseDialogComponent implements OnInit {
       description: this.description,
       timestamp: this.date.getTime(),
       payer: this.payer,
-      payees: this.peopleSelected.map((selected, i) => selected ? this.input.persons[i] : null).filter(p => p),
+      payees: this.peopleSelected.map((selected, i) => selected ? this.input.users[i] : null).filter(p => p),
     }
   }
 

@@ -1,0 +1,18 @@
+h1 {
+    margin: 10px;
+}
+
+.mat-icon {
+    vertical-align: middle;
+ }
+ 
+ .buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+ }
+
+ button {
+     /* margin: 20px; */
+
+ }

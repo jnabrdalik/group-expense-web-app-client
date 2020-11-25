@@ -1,4 +1,5 @@
 export interface User {
     id: number,
-    name: string
+    name: string,
+    balance?: number
 }

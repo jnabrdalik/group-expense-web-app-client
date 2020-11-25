@@ -22,7 +22,7 @@ export class GroupListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.groups$ = this.groupService.getGroupList();
+    this.groups$ = this.groupService.groups$;
   }
 
   addNewGroup() {
@@ -36,7 +36,7 @@ export class GroupListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(
       result => {
         if (result) {
-          this.groupService.addGroup(result.name)
+          this.groupService.addGroup(result.name, result.registeredOnly);
         }
       }
     );

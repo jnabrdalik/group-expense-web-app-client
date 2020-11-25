@@ -1,8 +1,11 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { GroupService } from '../group.service';
-import { GroupDetails } from '../model/group-details';
+import { GroupDetails } from '../model/group';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-group-details',
@@ -11,18 +14,39 @@ import { GroupDetails } from '../model/group-details';
 })
 export class GroupDetailsComponent implements OnInit {
 
-  groupDetails$: Observable<GroupDetails>;
+  groupDetails: GroupDetails;
+  isHandset$: Observable<boolean>;
+  isAuthenticated$: Observable<boolean>;
+  currentTabIndex: number;
 
   constructor(
     private groupService: GroupService,
-    private route: ActivatedRoute
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private breakpointObserver: BreakpointObserver
   ) { }
 
   ngOnInit(): void {
+    this.isAuthenticated$ = this.userService.isAuthenticated$;
+
     this.route.paramMap.subscribe(
       params => {
         const id = +params.get('id');
-        this.groupDetails$ = this.groupService.getGroupDetails(id);
+        this.groupService.downloadGroupDetails(id);
+      }
+    );
+
+    this.isHandset$ = this.breakpointObserver.observe([Breakpoints.Handset, Breakpoints.Small])
+    .pipe(
+      map(result => result.matches)
+    );
+
+    this.groupService.groupDetails$.subscribe(
+      result => {
+        this.groupDetails = result;
+        if (result?.users.length < 2) {
+          this.currentTabIndex = 1;
+        }
       }
     )
   }

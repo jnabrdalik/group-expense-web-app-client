@@ -9,3 +9,11 @@ table {
 .buttons {
   padding-left: 30px;
 }
+
+.expense-header {
+  padding-top: 20px;
+}
+
+.container {
+  height: 100%;
+}

@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+app-group-list {
+    width: 400px;
+    height: 100%;
+}
+
+.group-content {
+    width: 100%;
+}

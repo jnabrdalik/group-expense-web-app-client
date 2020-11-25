@@ -1,7 +1,7 @@
-import { Person } from './person';
+import { User } from './user';
 
-export class Debt {
-  creditor: Person;
-  debtor: Person;
+export interface Debt {
+  creditor: User;
+  debtor: User;
   amount: number;
 }

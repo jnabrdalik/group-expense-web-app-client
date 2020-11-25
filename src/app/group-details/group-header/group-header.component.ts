@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { NewGroupDialogComponent } from 'src/app/group-list/new-group-dialog/new-group-dialog.component';
 import { GroupService } from 'src/app/group.service';
 import { Group } from 'src/app/model/group';
-import { GroupDetails } from 'src/app/model/group-details';
+import { GroupDetails } from 'src/app/model/group';
 
 @Component({
   selector: 'app-group-header',

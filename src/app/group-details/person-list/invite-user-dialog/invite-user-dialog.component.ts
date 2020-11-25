@@ -3,7 +3,6 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
 import { GroupService } from 'src/app/group.service';
-import { Person } from 'src/app/model/person';
 import { User } from 'src/app/model/user';
 import { UserService } from 'src/app/user.service';
 
@@ -26,13 +25,13 @@ export class InviteUserDialogComponent implements OnInit {
   );
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public input: Person[],
+    @Inject(MAT_DIALOG_DATA) public input: User[],
     private userService: UserService,
     private groupService: GroupService
   ) { }
 
   ngOnInit(): void {
-    this.userNames = this.input.filter(p => p.relatedUserName !== null).map(p => p.relatedUserName);
+    this.userNames = this.input.filter(p => p.name !== null).map(p => p.name);
   }
 
   onChange() {
@@ -41,7 +40,7 @@ export class InviteUserDialogComponent implements OnInit {
 
   inviteUser(user: User) {
     this.userNames.push(user.name);
-    this.groupService.addPerson(user.name, user.id);
+    this.groupService.addUserToGroup(user);
   }
 
   userInGroup(user: User) {
