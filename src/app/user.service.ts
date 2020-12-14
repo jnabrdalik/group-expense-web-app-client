@@ -48,9 +48,9 @@ export class UserService {
     this.router.navigate(['login']);
   }
 
-  signUp(name: string, password: string) {
+  signUp(name: string, password: string, email: string) {
     this.http.post(`${this.apiUrl}/user/sign-up`, {
-      name, password
+      name, password, email
     }).subscribe(
       _ => this.login(name, password).subscribe()
     )
@@ -59,5 +59,9 @@ export class UserService {
   findUser(query: string): Observable<User[]> {
     console.log(query)
     return this.http.get<User[]>(`${this.apiUrl}/user/${query}/find`);
+  }
+
+  checkIfExists(username: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/user/${username}/exists`);
   }
 }

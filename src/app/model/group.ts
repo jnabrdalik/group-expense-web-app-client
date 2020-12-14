@@ -1,15 +1,16 @@
 import { Expense } from './expense';
-import { User } from './user';
+import { Member } from './member';
 
 export interface Group {
   id: number;
   name: string;
   timeCreated: number;
-  creatorUserName: string;
-  registeredOnly: boolean;
+  creatorName: string;
+  forRegisteredOnly: boolean;
+  archived: boolean;
 }
 
 export interface GroupDetails extends Group {
   expenses: Expense[];
-  users: User[];
+  members: Member[];
 }

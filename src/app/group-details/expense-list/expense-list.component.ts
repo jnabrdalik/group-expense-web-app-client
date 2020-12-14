@@ -1,44 +1,48 @@
-import { DatePipe } from '@angular/common';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatAccordion, MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
-import { Observable } from 'rxjs';
-import { GroupService } from 'src/app/group.service';
+import { MatExpansionPanel } from '@angular/material/expansion';
+import { Observable, Subscription } from 'rxjs';
+import { ExpenseService } from 'src/app/expense.service';
 import { Expense, ExpenseChange } from 'src/app/model/expense';
-import { GroupDetails } from 'src/app/model/group';
+import { Member } from 'src/app/model/member';
+import { WarningDialogComponent } from 'src/app/warning-dialog/warning-dialog.component';
 import { NewExpenseDialogComponent } from './new-expense-dialog/new-expense-dialog.component';
+import { MemberService } from 'src/app/member.service';
 
 @Component({
   selector: 'app-expense-list',
   templateUrl: './expense-list.component.html',
   styleUrls: ['./expense-list.component.css']
 })
-export class ExpenseListComponent implements OnInit {
-
-  @Input() group: GroupDetails;
-  displayedColumns: string[] = ['description', 'amount', 'payer', 'payees', 'timestamp', 'actions'];
-
+export class ExpenseListComponent implements OnInit, OnDestroy { 
+  expenses$: Observable<Expense[]>;
+  members: Member[];
   expenseChanges$: Observable<ExpenseChange[]>;
+  displayedColumns: string[] = ['description', 'amount', 'payer', 'payees', 'timestamp', 'actions'];  
+
+  private membersSubscription: Subscription;
 
   constructor(
-    private groupService: GroupService,
+    private expenseService: ExpenseService,
+    private memberService: MemberService,
     private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
-    this.expenseChanges$ = this.groupService.expenseChanges$;
+    this.expenses$ = this.expenseService.expenses$;
+    this.expenseChanges$ = this.expenseService.expenseChanges$;
+    this.membersSubscription = this.memberService.members$.subscribe(
+      members => this.members = members
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.membersSubscription.unsubscribe();
   }
 
   getPayeesNames(expense: Expense): string {
-    // if (expense.payees.length === this.group.persons.length) {
-    //   return " wszystkich";
-    // }
-    // else if (expense.payees.length >= this.group.persons.length / 2) {
-    //   return " wszystkich poza: " +
-    //     this.group.persons.filter(p1 => expense.payees.every(p2 => p1.name !== p2.name)).map(p => p.name).sort((a, b) => a.localeCompare(b)).join(', ');
-    // }
-
-    return expense.payees.map(p => p.name).sort((a, b) => a.localeCompare(b)).join(', ')
+    const weighted = expense.involvements.some(i => i.weight !== 1);
+    return expense.involvements.map(p => p.payee.name + (weighted ? ' (' + p.weight + ')' : '')).sort((a, b) => a.localeCompare(b)).join(', ');
   }
 
   getFieldName(field: string): string {
@@ -74,58 +78,62 @@ export class ExpenseListComponent implements OnInit {
     return d1.getTime() !== d2.getTime();
   }
 
-  addNewExpense(): void {
-    const dialogRef = this.dialog.open(NewExpenseDialogComponent, {
+  onRevertLastChange(expense: Expense, panel: MatExpansionPanel): void {
+    const dialogRef = this.dialog.open(WarningDialogComponent, {
       data: {
-        title: "Dodaj wydatek",
-        users: this.group.users
-      },
-      disableClose: true
+        title: 'Cofanie zmiany',
+        content: `Czy na pewno chcesz przywrócić wydatek "${expense.description}" do stanu sprzed ostatniej zmiany?`,
+        action: 'Cofnij zmianę'
+      }
     });
 
-    dialogRef.afterClosed().subscribe(
-      result => {
-        if (result) {
-          this.groupService.addExpense(result.description, result.amount, result.timestamp, result.payer, result.payees);
-        }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.expenseService.revertLastChange(expense);
+        panel.close();
       }
-    )
+    });    
   }
 
-  revertLastChange(expense: Expense, panel: MatExpansionPanel): void {
-    this.groupService.revertLastChange(expense);
-    panel.close();
-  }
-
-  editExpense(expense: Expense, panel: MatExpansionPanel): void {
+  onEditExpense(expense: Expense, panel: MatExpansionPanel): void {
     const dialogRef = this.dialog.open(NewExpenseDialogComponent, {
       data: {
         title: "Edytuj wydatek",
-        users: this.group.users,
+        members: this.members,
         editedExpense: expense
       },
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe(
-      result => {
-        if (result) {
-          this.groupService.editExpense(result);
-          panel.close();
-        }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.expenseService.editExpense(result);
+        panel.close();
       }
-    );
+    });
 
   }
 
-  deleteExpense(expense: Expense): void {
-    // warning TODO
+  onDeleteExpense(expense: Expense): void {
+    const dialogRef = this.dialog.open(WarningDialogComponent, {
+      data: {
+        title: 'Usuwanie wydatku',
+        content: expense.description 
+          ? `Czy na pewno chcesz usunąć wydatek "${expense.description}"?`
+          : "Czy na pewno chcesz usunąć spłatę długu?",
+        action: 'Usuń wydatek'
+      }
+    });
 
-    this.groupService.deleteExpense(expense);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.expenseService.deleteExpense(expense);
+      }
+    });    
   }
 
-  downloadExpenseHistory(expense: Expense) {
-    this.groupService.downloadExpenseHistory(expense);
+  setCurrentExpense(expense: Expense) {
+    this.expenseService.setCurrentExpense(expense);
   }
 
 }

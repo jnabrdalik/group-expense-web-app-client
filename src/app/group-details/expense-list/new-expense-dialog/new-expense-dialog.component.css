@@ -1,5 +1,31 @@
 .container {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+}
+
+.header {
+  margin-top: 10px;
+}
+
+.weight-caption {
+  width: 100px;
+  text-align: center;
+}
+
+.weight {
+  width: 20px;
+  text-align: center;
+}
+
+.payee {
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }

@@ -41,7 +41,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(
       result => {
         if (result) {
-          this.groupService.addGroup(result.name, result.registeredOnly);
+          this.groupService.addGroup(result.name, result.forRegisteredOnly);
         }
       }
     );

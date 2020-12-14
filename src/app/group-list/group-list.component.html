@@ -1,12 +1,16 @@
-<mat-nav-list>
-  <div mat-subheader>Twoje grupy</div>
-  <a mat-list-item *ngFor="let group of groups$ | async" [routerLink]="'/groups/'+ group.id" routerLinkActive="active">
-    <mat-icon mat-list-icon>group</mat-icon>
-    <div mat-line>{{group.name}}</div>
-  </a>
-</mat-nav-list>
-<div>
-  <button mat-button color="primary" (click)="addNewGroup()">
-    Stwórz nową grupę
-  </button>
+<div class="container">  
+  <mat-nav-list>
+    <div mat-subheader>Twoje grupy</div>
+    <h3 class="empty-list" *ngIf="(groups$ | async).length === 0">Nie należysz do żadnej grupy</h3>
+    <a mat-list-item *ngFor="let group of groups$ | async" [routerLink]="'/groups/'+ group.id" routerLinkActive="active" (click)="onGroupSelected()">
+      <mat-icon mat-list-icon>group</mat-icon>
+      <div mat-line>{{group.name}}</div>
+      <div mat-line *ngIf="group.archived">Zarchiwizowana</div>
+    </a>
+  </mat-nav-list>
+  <div class="btn-wrap">
+    <button mat-raised-button color="primary" (click)="addNewGroup()">
+      <mat-icon>group_add</mat-icon> Stwórz nową grupę
+    </button>
+  </div>
 </div>

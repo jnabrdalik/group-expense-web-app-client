@@ -15,5 +15,7 @@
 }
 
 mat-form-field {
+  margin-top: 10px;
   width: 400px;
+  max-width: 80vw;
 }

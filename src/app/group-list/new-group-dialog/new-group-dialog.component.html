@@ -2,13 +2,16 @@
   {{input.title}}
 </h1>
 <div mat-dialog-content class="content">
-    <mat-form-field>
+    <mat-form-field >
       <mat-label>Nazwa grupy</mat-label>
       <input matInput [(ngModel)]="name">
     </mat-form-field>
-    <mat-checkbox [(ngModel)]="registeredOnly">
-      Prywatna
-    </mat-checkbox>
+    <div class="chck-wrap">
+      <mat-checkbox [(ngModel)]="forRegisteredOnly">
+        Tylko dla zarejestrowanych użytkowników
+      </mat-checkbox>
+    </div>
+    
   </div>
 <div mat-dialog-actions align="end">
   <button mat-button [mat-dialog-close]="null">

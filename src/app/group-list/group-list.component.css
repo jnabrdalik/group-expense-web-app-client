@@ -5,3 +5,17 @@
 .active .mat-line {
     font-weight: bold;
 }
+
+.btn-wrap {
+    padding: 16px;
+}
+
+.container {
+    overflow-y: auto;
+    height: 100%;
+}
+
+
+.empty-list {
+ padding-left: 16px;
+}

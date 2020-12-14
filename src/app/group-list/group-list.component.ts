@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { GroupService } from '../group.service';
 import { Group } from '../model/group'
+import { SidenavService } from '../sidenav.service';
 import { NewGroupDialogComponent } from './new-group-dialog/new-group-dialog.component';
 
 @Component({
@@ -18,11 +19,16 @@ export class GroupListComponent implements OnInit {
 
   constructor(
     private groupService: GroupService,
+    private sidenavService: SidenavService,
     private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
     this.groups$ = this.groupService.groups$;
+  }
+
+  onGroupSelected() {
+    this.sidenavService.close();
   }
 
   addNewGroup() {
@@ -36,7 +42,8 @@ export class GroupListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(
       result => {
         if (result) {
-          this.groupService.addGroup(result.name, result.registeredOnly);
+          this.groupService.addGroup(result.name, result.forRegisteredOnly);
+          this.sidenavService.close();
         }
       }
     );

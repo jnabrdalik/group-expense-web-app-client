@@ -16,4 +16,17 @@ table {
 
 .container {
   height: 100%;
+  overflow-y: auto;
+}
+
+.mat-tab-body-wrapper {
+  height: 100%;
+}
+
+.payment {
+  color: green;
+}
+
+h2.header-empty {
+  padding: 20px;
 }

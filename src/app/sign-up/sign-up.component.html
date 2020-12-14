@@ -1,32 +1,40 @@
-<form (ngSubmit)="submit()">
+
   <div class="container">
-    <h1 class="mat-headline">Zarejestruj się</h1>
+    <h1 class="mat-display-1">Rejestracja</h1>
       <mat-form-field appearance="fill">
         <mat-label>
           Nazwa użytkownika
         </mat-label>
-        <input matInput required [(ngModel)]="username" name="username">
+        <input matInput [(ngModel)]="username" name="username" (ngModelChange)="onChange()">
+        <mat-hint *ngIf="username.length < 5">Nazwa użytkownika jest za krótka</mat-hint>
+        <mat-hint *ngIf="isTaken$ | async">Nazwa użytkownika jest zajęta</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>
+          Adres email
+        </mat-label>
+        <input matInput type="email" [(ngModel)]="email" name="email">
       </mat-form-field>
     
       <mat-form-field appearance="fill">
         <mat-label>
           Hasło
         </mat-label>
-        <input matInput type="password" required [(ngModel)]="password" name="password">
+        <input matInput type="password" [(ngModel)]="password" name="password">
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>
           Powtórz hasło
         </mat-label>
-        <mat-error *ngIf="password !== repeatedPassword">Hasła muszą być takie same</mat-error>
-        <input matInput type="password" required [(ngModel)]="repeatedPassword" name="repeatedPassword">
+        <mat-hint *ngIf="password !== repeatedPassword">Hasła muszą być takie same</mat-hint>
+        <input matInput type="password" [(ngModel)]="repeatedPassword" name="repeatedPassword">
       </mat-form-field>
     
       <div>
-      <button mat-raised-button color="primary" type="submit">
+      <button mat-raised-button color="primary" (click)="submit()" [disabled]="(isTaken$ | async) || username.length < 5 || password.length <= 8 || password !== repeatedPassword">
         Zarejestruj
       </button>
       </div>
-    </div>  
-</form>
+    </div>

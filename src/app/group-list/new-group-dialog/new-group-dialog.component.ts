@@ -9,7 +9,7 @@ import { Group } from 'src/app/model/group';
 })
 export class NewGroupDialogComponent implements OnInit {
   name: string = '';
-  registeredOnly: boolean = false;
+  forRegisteredOnly: boolean = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public input: { title: string, group?: Group }
@@ -18,20 +18,20 @@ export class NewGroupDialogComponent implements OnInit {
   ngOnInit(): void {
     if (this.input.group) {
       this.name = this.input.group.name.slice();
-      this.registeredOnly = this.input.group.registeredOnly;
+      this.forRegisteredOnly = this.input.group.forRegisteredOnly;
     }
   }
 
   isAddButtonDisabled() {
     return this.name.trim().length === 0 ||
-    this.input.group && this.name.trim() === this.input.group.name && this.registeredOnly === this.input.group.registeredOnly;
+    this.input.group && this.name.trim() === this.input.group.name && this.forRegisteredOnly === this.input.group.forRegisteredOnly;
   }
 
   getResult() {
     return {
       id: this.input.group?.id,
       name: this.name,
-      registeredOnly: this.registeredOnly
+      forRegisteredOnly: this.forRegisteredOnly
     }
   }
 

@@ -1,8 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { GroupService } from 'src/app/group.service';
 import { Debt } from 'src/app/model/debt';
+import { UserService } from 'src/app/user.service';
+import { DebtService } from 'src/app/debt.service';
 
 @Component({
   selector: 'app-debt-list',
@@ -11,33 +14,51 @@ import { Debt } from 'src/app/model/debt';
 })
 export class DebtListComponent implements OnInit, OnDestroy {
 
-  private groupId: number;
+  private routeSubscription: Subscription;
+
   debts$: Observable<Debt[]>;
-
-  displayedColumns: string[] = ['creditor', 'debtor', 'amount', 'actions'];
-
-  private subscription: Subscription;
+  isAuth$: Observable<boolean>;
+  debtorsNotifiedIds: number[];
+  displayedColumns: string[] = ['creditor', 'debtor', 'amount', 'actions'];  
 
   constructor(
-    private groupService: GroupService,
-    private route: ActivatedRoute
+    private userService: UserService,
+    private debtService: DebtService,
+    private route: ActivatedRoute,
+    private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
-    this.subscription = this.route.paramMap.subscribe(
+    this.debtorsNotifiedIds = [];
+    this.routeSubscription = this.route.paramMap.subscribe(
       params => {
-        this.groupId = +params.get('id');
-        this.debts$ = this.groupService.getDebts(this.groupId);
+        const groupId = +params.get('id');
+        this.debts$ = this.debtService.getDebts(groupId);
       }
-    );    
+    );
+
+    this.isAuth$ = this.userService.isAuthenticated$;
   }
 
   markAsPaid(debt: Debt) {
-    this.groupService.markDebtAsPaid(debt);
+    this.debtService.markDebtAsPaid(debt).subscribe(
+      _ => this.snackbar.open(`Dług został oznaczony jako zapłacony.` , 'OK')
+    );
+  }
+
+  notifyButtonDisabled(debt: Debt): boolean {
+    return this.debtorsNotifiedIds.includes(debt?.debtor.id) || debt?.debtor.relatedUserName === null;
+  }
+
+  sendNotification(debt: Debt) {
+    this.debtorsNotifiedIds.push(debt.debtor.id);
+    this.debtService.sendDebtNotification(debt).subscribe(
+      _ => this.snackbar.open(`Powiadomienie o długu zostało wysłane do: ${debt.debtor.name}.` , 'OK')
+    );
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.routeSubscription.unsubscribe();
   }
 
 }

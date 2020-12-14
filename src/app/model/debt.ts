@@ -1,7 +1,7 @@
-import { User } from './user';
+import { Member } from './member';
 
 export interface Debt {
-  creditor: User;
-  debtor: User;
+  creditor: Member;
+  debtor: Member;
   amount: number;
 }

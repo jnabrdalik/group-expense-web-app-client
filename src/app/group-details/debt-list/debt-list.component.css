@@ -7,3 +7,27 @@
 table {
   width: 100%;
 }
+
+h2 {
+  padding: 20px;
+}
+
+/* th {
+  font-size: large;
+} */
+
+td {
+  font-size: 16px;
+}
+
+.container {
+  overflow-y: auto;
+}
+
+.amount-header {
+  text-align: right;
+}
+
+.amount-cell {
+  font-weight: bold;
+}

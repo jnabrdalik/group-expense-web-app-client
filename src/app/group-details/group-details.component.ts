@@ -44,8 +44,12 @@ export class GroupDetailsComponent implements OnInit {
     this.groupService.groupDetails$.subscribe(
       result => {
         this.groupDetails = result;
-        if (result?.users.length < 2) {
+        if (result?.members.length < 2) {
           this.currentTabIndex = 1;
+        }
+
+        else if (this.currentTabIndex === 2 && result?.expenses.length === 0) {
+          this.currentTabIndex = 0;
         }
       }
     )

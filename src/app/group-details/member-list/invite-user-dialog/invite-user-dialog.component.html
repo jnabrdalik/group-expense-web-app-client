@@ -1,0 +1,31 @@
+<h1 mat-dialog-title>
+  Dodaj członka grupy
+</h1>
+<div mat-dialog-content class="content">
+  <mat-form-field>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput placeholder="Znajdź użytkownika" [(ngModel)]="query" (ngModelChange)="onChange()" autocomplete="off"
+      #input>
+  </mat-form-field>
+  <h3 *ngIf="(results$ | async)?.length === 0">
+    Brak wyników
+  </h3>
+  <mat-list>
+    <mat-list-item *ngFor="let result of results$ | async">
+      <div mat-line>{{result.name}}</div>
+      <button mat-icon-button matTooltip="Dodaj do grupy" (click)="inviteUser(result)" *ngIf="!userInGroup(result)">
+        <mat-icon>person_add</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Dodano" *ngIf="userInGroup(result)">
+        <mat-icon>done</mat-icon>
+      </button>
+      <mat-divider></mat-divider>
+    </mat-list-item>  
+  </mat-list>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" *ngIf="query?.trim().length >= 3 " (click)="addUnregisteredMember()">
+    Dodaj "{{query}}" jako niezarejestrowanego członka
+  </button>  
+</div>

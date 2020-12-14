@@ -2,34 +2,56 @@
   {{input.title}}
 </h1>
 <div mat-dialog-content class="container">
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label>Za co?</mat-label>
-    <input matInput [(ngModel)]="description">
+    <input matInput [(ngModel)]="description" autocomplete="off">
   </mat-form-field>
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label>Ile?</mat-label>
-    <input matInput [(ngModel)]="amount" type="number">
+    <input matInput [(ngModel)]="amount" type="number" autocomplete="off">
+    <span matSuffix>zł</span>
   </mat-form-field>
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label>Kiedy?</mat-label>
-    <input matInput [matDatepicker]="picker" [(ngModel)]="date">
+    <input matInput [matDatepicker]="picker" [(ngModel)]="date" autocomplete="off">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label>Kto zapłacił?</mat-label>
     <mat-select [(ngModel)]="payer">
-      <mat-option *ngFor="let person of input.users" [value]="person">
-        {{person.name}}
+      <mat-option *ngFor="let member of input.members" [value]="member">
+        {{member.name}}
       </mat-option>
     </mat-select>
-  </mat-form-field>  
-  <h3>Za kogo?</h3>
-  <div *ngFor="let person of input.users; let i = index">
-    <mat-checkbox [value]="person" [(ngModel)]="peopleSelected[i]">
-      {{person.name}}
-    </mat-checkbox>
+  </mat-form-field>
+  <div>
+    <div class="header">
+      <p>Za kogo?</p>
+      <div fxFlex></div>
+      <p class="weight-caption">Waga</p>
+    </div>
+    <div *ngFor="let member of input.members; let i = index; let last = last">
+      <div class="payee">
+        <mat-checkbox [value]="member" [(ngModel)]="involvements[i].selected" (ngModelChange)="onCheckChange(i)">
+          {{member.name}}
+        </mat-checkbox>
+        <div style="flex: 1 1 auto"></div>
+        <button mat-icon-button *ngIf="involvements[i].selected" (click)="onSubtractWeight(i)" [disabled]="involvements[i].weight === 1">
+          <mat-icon>remove</mat-icon>
+        </button>
+        <span *ngIf="involvements[i].selected" class="weight">
+          {{involvements[i].weight}}
+        </span>
+        <button mat-icon-button *ngIf="involvements[i].selected" (click)="onAddWeight(i)">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      
+      <mat-divider *ngIf="!last"></mat-divider>
+    </div>
   </div>
+  
 </div>
 <mat-dialog-actions align="end">
   <button mat-button [mat-dialog-close]="null">

@@ -1,66 +1,68 @@
 <div class="container">
+  <h2 class="header-empty" *ngIf="(expenses$ | async)?.length === 0">
+    Lista wydatków jest pusta.
+  </h2>
   <mat-accordion>
-    <mat-expansion-panel *ngFor="let expense of group?.expenses; let i = index; let first = first" hideToggle #panel>
+    <mat-expansion-panel *ngFor="let expense of expenses$ | async; let i = index; let first = first" hideToggle #panel>
       <mat-expansion-panel-header [collapsedHeight]="'90px'" [expandedHeight]="'90px'"
-        (click)="panel.expanded ? downloadExpenseHistory(expense) : null">
-
+        (click)="panel.expanded ? setCurrentExpense(expense) : null">
         <div>
-          <h2 mat-line>{{expense.description}}</h2>
-          <div mat-line>{{expense.timestamp| date}}</div>
+          <div mat-line class="mat-caption">{{expense.timestamp| date}}</div>
+          <h2 *ngIf="expense.description" mat-line style="margin-top: 2px; margin-bottom: 5px">{{expense.description}}
+          </h2>
+          <h2 class="payment" *ngIf="!expense.description" mat-line style="margin-top: 2px; margin-bottom: 5px"
+            color="primary">Spłata długu</h2>
+          <div mat-line class="mat-body">{{getPayeesNames(expense)}}</div>
         </div>
         <div fxFlex></div>
         <div align="end">
-          <h2 mat-line>{{expense.amount / 100 | currency}}</h2>
-          <div mat-line><b>{{expense.payer.name}}</b> zapłacił(a) za: <b>{{getPayeesNames(expense)}}</b></div>
+          <div mat-line class="mat-caption">{{expense.payer.name}} zapłacił(a)</div>
+          <h2 mat-line style="margin-top: 2px;">{{expense.amount / 100 | currency}}</h2>
         </div>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
-        <mat-list *ngIf="(expenseChanges$ | async).length > 0">
-          <div mat-subheader>
-            Historia zmian
-          </div>
-          <mat-divider></mat-divider>
-
-          <div *ngFor="let expenseChange of expenseChanges$ | async">
-            <mat-list-item>
-              <div mat-line>
-                {{expenseChange.changeTimestamp | date: 'medium'}} {{expenseChange.changedBy.name}} zmienił(a):
-              </div>
-              <div mat-line *ngFor="let fieldChange of expenseChange.changes">
-                <span> {{getFieldName(fieldChange.fieldName)}} z </span>
-                <span *ngIf="fieldChange.fieldName === 'timestamp'"><b>{{fieldChange.valueBefore | date}}</b></span>
-                <span *ngIf="fieldChange.fieldName === 'amount'"><b>{{+fieldChange.valueBefore / 100 | currency}}</b></span>
-                <span
-                  *ngIf="fieldChange.fieldName !== 'timestamp' && fieldChange.fieldName !== 'amount'"><b>{{fieldChange.valueBefore}}</b></span>
-                <span> na </span>
-                <span *ngIf="fieldChange.fieldName === 'timestamp'"><b>{{fieldChange.valueAfter | date}}</b></span>
-                <span *ngIf="fieldChange.fieldName === 'amount'"><b>{{+fieldChange.valueAfter / 100 | currency}}</b></span>
-                <span *ngIf="fieldChange.fieldName !== 'timestamp' && fieldChange.fieldName !== 'amount'"><b>{{fieldChange.valueAfter}}</b></span>
-              </div>
-            </mat-list-item>
+        <mat-list>
+          <div *ngIf="(expenseChanges$ | async).length > 0">
+            <div mat-subheader>
+              Historia zmian
+            </div>
+            <mat-divider></mat-divider>
+            <div *ngFor="let expenseChange of expenseChanges$ | async">
+              <mat-list-item>
+                <div mat-line>
+                  {{expenseChange.changeTimestamp | date: 'medium'}} {{expenseChange.changedBy ? expenseChange.changedBy.name : 'Gość'}} zmienił(a):
+                </div>
+                <div mat-line *ngFor="let fieldChange of expenseChange.changes">
+                  <span> {{getFieldName(fieldChange.fieldName)}} z </span>
+                  <span *ngIf="fieldChange.fieldName === 'timestamp'"><b>{{fieldChange.valueBefore | date}}</b></span>
+                  <span
+                    *ngIf="fieldChange.fieldName === 'amount'"><b>{{+fieldChange.valueBefore / 100 | currency}}</b></span>
+                  <span
+                    *ngIf="fieldChange.fieldName !== 'timestamp' && fieldChange.fieldName !== 'amount'"><b>{{fieldChange.valueBefore}}</b></span>
+                  <span> na </span>
+                  <span *ngIf="fieldChange.fieldName === 'timestamp'"><b>{{fieldChange.valueAfter | date}}</b></span>
+                  <span
+                    *ngIf="fieldChange.fieldName === 'amount'"><b>{{+fieldChange.valueAfter / 100 | currency}}</b></span>
+                  <span
+                    *ngIf="fieldChange.fieldName !== 'timestamp' && fieldChange.fieldName !== 'amount'"><b>{{fieldChange.valueAfter}}</b></span>
+                </div>
+              </mat-list-item>
+            </div>
           </div>
         </mat-list>
       </ng-template>
-
       <mat-action-row>
-        <button *ngIf="(expenseChanges$ | async).length > 0" color="primary" mat-icon-button matTooltip="Cofnij ostatnią zmianę" (click)="revertLastChange(expense, panel)">
+        <button *ngIf="(expenseChanges$ | async).length > 0" color="primary" mat-icon-button
+          matTooltip="Cofnij ostatnią zmianę" (click)="onRevertLastChange(expense, panel)">
           <mat-icon>undo</mat-icon>
         </button>
-        <button color="primary" mat-icon-button matTooltip="Edytuj wydatek" (click)="editExpense(expense, panel)">
+        <button color="primary" mat-icon-button matTooltip="Edytuj wydatek" (click)="onEditExpense(expense, panel)"
+          *ngIf="expense.description">
           <mat-icon>edit</mat-icon>
         </button>
-        <button color="warn" mat-icon-button matTooltip="Usuń wydatek" (click)="deleteExpense(expense)">
+        <button color="warn" mat-icon-button matTooltip="Usuń wydatek" (click)="onDeleteExpense(expense)">
           <mat-icon>close</mat-icon>
         </button>
       </mat-action-row>
     </mat-expansion-panel>
   </mat-accordion>
-
-  <div style="padding-bottom: 50px;">
-    <div fxFlex></div>
-    <button mat-fab color="primary" class="add-button" (click)="addNewExpense()" matTooltip="Dodaj wydatek"
-      matTooltipPosition="left">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
-</div>

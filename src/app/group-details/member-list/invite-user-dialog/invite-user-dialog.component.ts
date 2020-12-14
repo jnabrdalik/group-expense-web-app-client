@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { GroupService } from 'src/app/group.service';
+import { MemberService } from 'src/app/member.service';
 import { User } from 'src/app/model/user';
 import { UserService } from 'src/app/user.service';
 
@@ -14,24 +15,26 @@ import { UserService } from 'src/app/user.service';
 export class InviteUserDialogComponent implements OnInit {
 
   query: string;
-  querySubject = new Subject<string>();
+  private querySubject = new Subject<string>();
 
   private userNames: string[];
 
   results$: Observable<User[]> = this.querySubject.asObservable().pipe(
-    debounceTime(500),
     filter(v => v.length >= 3),
+    debounceTime(500),    
+    distinctUntilChanged(),
     switchMap(v => this.userService.findUser(v))
   );
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public input: User[],
+    @Inject(MAT_DIALOG_DATA) public input: string[],
     private userService: UserService,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private memberService: MemberService
   ) { }
 
   ngOnInit(): void {
-    this.userNames = this.input.filter(p => p.name !== null).map(p => p.name);
+    this.userNames = [...this.input];
   }
 
   onChange() {
@@ -40,10 +43,14 @@ export class InviteUserDialogComponent implements OnInit {
 
   inviteUser(user: User) {
     this.userNames.push(user.name);
-    this.groupService.addUserToGroup(user);
+    this.memberService.addMember(user.name, user.name);
   }
 
-  userInGroup(user: User) {
+  addUnregisteredMember() {
+    this.memberService.addMember(this.query);
+  }
+
+  userInGroup(user: User): boolean {
     return this.userNames.includes(user.name);
   }
 

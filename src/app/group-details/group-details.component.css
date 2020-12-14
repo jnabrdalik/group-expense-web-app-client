@@ -6,9 +6,35 @@
 
 app-group-list {
     width: 400px;
+    /* flex-grow: 1; */
+    /* position: fixed;
+    left: 0; */
     height: 100%;
 }
 
 .group-content {
+    /* width: 80%; */
+    /* flex-grow: 5; */
     width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    /* position: fixed;
+    left: 401px; */
 }
+
+
+mat-tab-group {
+    height: 100%;
+  overflow: auto;
+}
+
+/* .container {
+    height: calc(100% - 64px);
+  }
+  
+@media (max-width: 600px) {
+    .container {
+        height: calc(100% - 56px)
+    }
+} */

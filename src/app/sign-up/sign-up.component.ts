@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs/operators';
 import { UserService } from '../user.service';
 
 @Component({
@@ -8,9 +10,19 @@ import { UserService } from '../user.service';
 })
 export class SignUpComponent implements OnInit {
 
-  username: string;
-  password: string;
-  repeatedPassword: string;
+  username: string = '';
+  password: string = '';
+  email: string = '';
+  repeatedPassword: string = '';
+
+  private usernameSubject = new Subject<string>();
+
+  isTaken$: Observable<boolean> = this.usernameSubject.asObservable().pipe(
+    filter(u => u.length >= 5),
+    debounceTime(500),
+    distinctUntilChanged(),
+    switchMap(u => this.userService.checkIfExists(u))
+  );
 
   constructor(
     private userService: UserService
@@ -19,8 +31,14 @@ export class SignUpComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  submit(): void {
-    this.userService.signUp(this.username, this.password);
+  onChange(): void {
+    this.usernameSubject.next(this.username);
   }
+
+  submit(): void {
+    this.userService.signUp(this.username, this.password, this.email);
+  }
+
+
 
 }

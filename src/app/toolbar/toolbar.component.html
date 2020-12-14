@@ -1,15 +1,11 @@
 <mat-toolbar color="primary" class="mat-elevation-z8">
     <button mat-icon-button (click)="drawer.toggle()" *ngIf="(isHandset$ | async) && (isAuthenticated$ | async)">
         <mat-icon>menu</mat-icon>
-    </button>
-    <span>Rozliczanie wydatków</span>
+    </button>    
+    <a routerLink="groups" mat-button>
+        <mat-icon>monetization_on</mat-icon>
+    </a>
     <span class="spacer"></span>
-    <a routerLink="groups" mat-button *ngIf="isAuthenticated$ | async">
-        MOJE GRUPY
-    </a>
-    <a routerLink="account" mat-button *ngIf="isAuthenticated$ | async">
-        KONTO
-    </a>
     <button routerLink="groups" mat-button (click)="logout()" *ngIf="isAuthenticated$ | async">
         WYLOGUJ
     </button>

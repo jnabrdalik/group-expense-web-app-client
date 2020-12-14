@@ -5,14 +5,36 @@ h1 {
 .mat-icon {
     vertical-align: middle;
  }
+
+ .container {
+     display: flex;
+     flex-direction: column;
+ }
  
- .buttons {
+ .row {
     display: flex;
     flex-direction: row;
     align-items: center;
  }
 
- button {
-     /* margin: 20px; */
+ .add-btn {
+    margin-left: 10px;
+    margin-bottom: 10px;
+ }
 
+ .join-btn {
+    margin: 10px
+ }
+
+ .join-hdr {
+    margin: 10px
+ }
+ 
+
+ .btn-icon {
+    margin-right: 5px;
+ }
+
+ .opt-btn {
+    margin-right: 10px;
  }
