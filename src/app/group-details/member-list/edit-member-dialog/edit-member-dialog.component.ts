@@ -19,7 +19,7 @@ export class EditMemberDialogComponent implements OnInit {
     }
   }
 
-  isAddButtonDisabled() {
+  addButtonDisabled() {
     return this.name.trim() === '' || this.input.members.some(p => p.name === this.name.trim());
   }
 

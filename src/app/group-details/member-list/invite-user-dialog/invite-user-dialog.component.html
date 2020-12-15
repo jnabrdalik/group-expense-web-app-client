@@ -4,7 +4,7 @@
 <div mat-dialog-content class="content">
   <mat-form-field>
     <mat-icon matPrefix>search</mat-icon>
-    <input matInput placeholder="Znajdź użytkownika" [(ngModel)]="query" (ngModelChange)="onChange()" autocomplete="off"
+    <input matInput placeholder="Znajdź użytkownika" [(ngModel)]="query" (ngModelChange)="onQueryChange()" autocomplete="off"
       #input>
   </mat-form-field>
   <h3 *ngIf="(results$ | async)?.length === 0">
@@ -13,7 +13,7 @@
   <mat-list>
     <mat-list-item *ngFor="let result of results$ | async">
       <div mat-line>{{result.name}}</div>
-      <button mat-icon-button matTooltip="Dodaj do grupy" (click)="inviteUser(result)" *ngIf="!userInGroup(result)">
+      <button mat-icon-button matTooltip="Dodaj do grupy" (click)="onInviteUser(result)" *ngIf="!userInGroup(result)">
         <mat-icon>person_add</mat-icon>
       </button>
       <button mat-icon-button matTooltip="Dodano" *ngIf="userInGroup(result)">
@@ -25,7 +25,7 @@
 </div>
 
 <div mat-dialog-actions>
-  <button mat-raised-button color="primary" *ngIf="query?.trim().length >= 3 " (click)="addUnregisteredMember()">
+  <button mat-raised-button color="primary" *ngIf="query?.trim().length >= 3 " (click)="onAddUnregisteredMember()">
     Dodaj "{{query}}" jako niezarejestrowanego członka
   </button>  
 </div>

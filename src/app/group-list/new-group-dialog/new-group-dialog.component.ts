@@ -22,9 +22,9 @@ export class NewGroupDialogComponent implements OnInit {
     }
   }
 
-  isAddButtonDisabled() {
+  addButtonDisabled() {
     return this.name.trim().length === 0 ||
-    this.input.group && this.name.trim() === this.input.group.name && this.forRegisteredOnly === this.input.group.forRegisteredOnly;
+      this.input.group && this.name.trim() === this.input.group.name && this.forRegisteredOnly === this.input.group.forRegisteredOnly;
   }
 
   getResult() {

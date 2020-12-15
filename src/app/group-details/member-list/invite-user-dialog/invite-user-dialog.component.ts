@@ -1,8 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-import { GroupService } from 'src/app/group.service';
+import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs/operators';
 import { MemberService } from 'src/app/member.service';
 import { User } from 'src/app/model/user';
 import { UserService } from 'src/app/user.service';
@@ -29,7 +28,6 @@ export class InviteUserDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public input: string[],
     private userService: UserService,
-    private groupService: GroupService,
     private memberService: MemberService
   ) { }
 
@@ -37,16 +35,16 @@ export class InviteUserDialogComponent implements OnInit {
     this.userNames = [...this.input];
   }
 
-  onChange() {
+  onQueryChange() {
     this.querySubject.next(this.query);
   }
 
-  inviteUser(user: User) {
+  onInviteUser(user: User) {
     this.userNames.push(user.name);
     this.memberService.addMember(user.name, user.name);
   }
 
-  addUnregisteredMember() {
+  onAddUnregisteredMember() {
     this.memberService.addMember(this.query);
   }
 

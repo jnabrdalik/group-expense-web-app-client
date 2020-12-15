@@ -40,7 +40,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     this.membersSubscription.unsubscribe();
   }
 
-  getPayeesNames(expense: Expense): string {
+  getPayeesNamesConcat(expense: Expense): string {
     const weighted = expense.involvements.some(i => i.weight !== 1);
     return expense.involvements.map(p => p.payee.name + (weighted ? ' (' + p.weight + ')' : '')).sort((a, b) => a.localeCompare(b)).join(', ');
   }
@@ -132,8 +132,9 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     });    
   }
 
-  setCurrentExpense(expense: Expense) {
-    this.expenseService.setCurrentExpense(expense);
+  onClickExpensePanel(panel: MatExpansionPanel, expense: Expense) {
+    if (panel.expanded) {
+      this.expenseService.downloadExpenseHistory(expense);
+    }
   }
-
 }

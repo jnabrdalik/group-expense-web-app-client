@@ -33,7 +33,7 @@
       </mat-form-field>
     
       <div>
-      <button mat-raised-button color="primary" (click)="submit()" [disabled]="(isTaken$ | async) || username.length < 5 || password.length <= 8 || password !== repeatedPassword">
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="(isTaken$ | async) || username.length < 5 || password.length <= 8 || password !== repeatedPassword">
         Zarejestruj
       </button>
       </div>

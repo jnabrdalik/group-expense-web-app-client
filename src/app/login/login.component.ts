@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
     )
   }
 
-  submit() {
+  onSubmit() {
     this.usernameOrPasswordIncorrect = false;
     this.userService.login(this.username, this.password).subscribe(
       _ => this.usernameOrPasswordIncorrect = false,

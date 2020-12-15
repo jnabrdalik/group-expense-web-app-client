@@ -38,10 +38,10 @@
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let debt" align="end">
         <div>
-          <button color="primary" mat-icon-button matTooltip="Oznacz jako zapłacone" (click)="markAsPaid(debt)">
+          <button color="primary" mat-icon-button matTooltip="Oznacz jako zapłacone" (click)="onMarkAsPaid(debt)">
             <mat-icon>check</mat-icon>
           </button>
-          <button color="primary" mat-icon-button matTooltip="Powiadom o długu" (click)="sendNotification(debt)" [disabled]="notifyButtonDisabled()">
+          <button color="primary" mat-icon-button matTooltip="Powiadom o długu" (click)="onSendNotification(debt)" [disabled]="notifyButtonDisabled()">
             <mat-icon>notifications</mat-icon>
           </button>
         </div>

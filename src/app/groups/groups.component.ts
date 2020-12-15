@@ -30,7 +30,11 @@ export class GroupsComponent implements OnInit, OnDestroy {
     );
   }
 
-  addNewGroup() {
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  onAddGroup() {
     const dialogRef = this.dialog.open(NewGroupDialogComponent, {
       data: {
         title: 'Dodaj grupę'
@@ -45,10 +49,6 @@ export class GroupsComponent implements OnInit, OnDestroy {
         }
       }
     );
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 
 }

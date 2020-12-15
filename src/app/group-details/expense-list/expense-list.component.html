@@ -5,14 +5,14 @@
   <mat-accordion>
     <mat-expansion-panel *ngFor="let expense of expenses$ | async; let i = index; let first = first" hideToggle #panel>
       <mat-expansion-panel-header [collapsedHeight]="'90px'" [expandedHeight]="'90px'"
-        (click)="panel.expanded ? setCurrentExpense(expense) : null">
+        (click)="onClickExpensePanel(panel, expense)">
         <div>
           <div mat-line class="mat-caption">{{expense.timestamp| date}}</div>
           <h2 *ngIf="expense.description" mat-line style="margin-top: 2px; margin-bottom: 5px">{{expense.description}}
           </h2>
           <h2 class="payment" *ngIf="!expense.description" mat-line style="margin-top: 2px; margin-bottom: 5px"
             color="primary">Spłata długu</h2>
-          <div mat-line class="mat-body">{{getPayeesNames(expense)}}</div>
+          <div mat-line class="mat-body">{{getPayeesNamesConcat(expense)}}</div>
         </div>
         <div fxFlex></div>
         <div align="end">

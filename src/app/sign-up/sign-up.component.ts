@@ -35,7 +35,7 @@ export class SignUpComponent implements OnInit {
     this.usernameSubject.next(this.username);
   }
 
-  submit(): void {
+  onSubmit(): void {
     this.userService.signUp(this.username, this.password, this.email);
   }
 

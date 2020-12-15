@@ -2,7 +2,7 @@
     <app-group-list *ngIf="(isAuthenticated$ | async) && !(isHandset$ | async)"></app-group-list>
     <mat-divider vertical="true" *ngIf="!(isHandset$ | async)"></mat-divider>
     <div class="group-content" *ngIf="groupDetails">
-      <app-group-header [group]="groupDetails"></app-group-header>
+      <app-group-header></app-group-header>
       <mat-divider></mat-divider>
       <mat-tab-group animationDuration="0ms" [(selectedIndex)]="currentTabIndex">
         <mat-tab [disabled]="groupDetails?.members.length < 2">
@@ -11,10 +11,10 @@
               Wydatki
             </label>
           </ng-template>
-          <app-expense-list [group]="groupDetails"></app-expense-list>
+          <app-expense-list></app-expense-list>
         </mat-tab>
         <mat-tab label="Członkowie" matTooltip="Test">
-          <app-member-list [group]="groupDetails"></app-member-list>
+          <app-member-list></app-member-list>
         </mat-tab>
         <mat-tab [disabled]="groupDetails?.members.length < 2 || groupDetails?.expenses.length < 1" *ngIf="!groupDetails?.archived">
           <ng-template mat-tab-label>

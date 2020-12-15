@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Expense, Involvement } from 'src/app/model/expense';
+import { Expense } from 'src/app/model/expense';
 import { Member } from 'src/app/model/member';
 
 @Component({
@@ -114,5 +114,4 @@ export class NewExpenseDialogComponent implements OnInit {
       }).filter(i => i !== null)
     }
   }
-
 }

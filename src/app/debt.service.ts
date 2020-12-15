@@ -19,7 +19,7 @@ export class DebtService {
     this.apiUrl = environment.apiUrl;
   }
 
-  getDebts(groupId: number): Observable<Debt[]> {
+  getDebtsForGroup(groupId: number): Observable<Debt[]> {
     this.currentGroupId = groupId;
     this.http.get<Debt[]>(`${this.apiUrl}/group/${groupId}/debts`).subscribe(
       result => this.debts.next(result)
@@ -37,15 +37,19 @@ export class DebtService {
   }
 
   markDebtAsPaid(debt: Debt): Observable<boolean> {
-    return this.expenseService.addDebtPayment(debt).pipe(map(
-      _ => {
-        const debts = this.debts.value;
-        const index = debts.indexOf(debt);
-        debts.splice(index, 1);
-        this.debts.next(debts);
-        return true;
-      }
-    ));  
+    return this.expenseService.addExpense(
+      null,
+      debt.amount,
+      Date.now(),
+      debt.debtor,
+      [{ payee: debt.creditor, weight: 1 }]).pipe(map(
+        _ => {
+          const debts = this.debts.value;
+          const index = debts.indexOf(debt);
+          debts.splice(index, 1);
+          this.debts.next(debts);
+          return true;
+        }
+      ));
   }
-  
 }

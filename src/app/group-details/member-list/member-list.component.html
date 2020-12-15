@@ -1,11 +1,11 @@
 <mat-list>
-  <mat-list-item *ngFor="let member of group?.members">
+  <mat-list-item *ngFor="let member of members">
     <mat-icon mat-list-icon>person</mat-icon>
     <div mat-line>{{member.relatedUserName && member.relatedUserName !== member.name ? member.name + ' (' + member.relatedUserName + ')' : member.name}}</div>
-    <button color="primary" mat-icon-button (click)="editMember(member)" *ngIf="!group.archived">
+    <button color="primary" mat-icon-button (click)="onEditMember(member)">
       <mat-icon>edit</mat-icon>
     </button>
-    <button color="warn" mat-icon-button *ngIf="!group.archived" (click)="deleteMemberFromGroup(member)"
+    <button color="warn" mat-icon-button (click)="onDeleteMember(member)"
       matTooltip="Usuń z grupy">
       <mat-icon>close</mat-icon>
     </button>

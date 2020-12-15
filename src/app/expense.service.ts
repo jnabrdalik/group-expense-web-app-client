@@ -6,8 +6,6 @@ import { Expense, ExpenseChange, Involvement } from './model/expense';
 import { GroupService } from './group.service';
 import { Member } from './model/member';
 import { tap } from 'rxjs/operators';
-import { Debt } from './model/debt';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -18,51 +16,41 @@ export class ExpenseService {
 
   private expenses = new BehaviorSubject<Expense[]>([]);
   expenses$ = this.expenses.asObservable();
-  
+
   private expenseChanges = new BehaviorSubject<ExpenseChange[]>([]);
   expenseChanges$ = this.expenseChanges.asObservable();
 
   constructor(private http: HttpClient, private groupService: GroupService) {
     this.apiUrl = environment.apiUrl;
     this.groupService.groupDetails$.subscribe(
-      groupDetails => this.expenses.next(groupDetails.expenses)
+      group=> {
+        this.currentGroupId = group.id;
+        this.expenses.next(group.expenses);
+        this.sortExpenses();
+      }
     );
-    this.groupService.currentGroupId$.subscribe(
-      groupId => {this.currentGroupId = groupId; console.log(this.currentGroupId)}
+    this.groupService.groupDetails$.subscribe(
+      group => this.currentGroupId = group?.id
     );
   }
 
   addExpense(description: string, amount: number, timestamp: number, payer: Member, involvements: Involvement[]) {
-    this.http.post<Expense>(`${this.apiUrl}/expense/${this.currentGroupId}`, {
+    return this.http.post<Expense>(`${this.apiUrl}/expense/${this.currentGroupId}`, {
       description,
       amount,
       payerId: payer.id,
       involvements: involvements.map(i => {
         return {
-          payeeId: i.payee.id, 
+          payeeId: i.payee.id,
           weight: i.weight
         }
       }),
       timestamp
-    }).subscribe(
-      response => this.expenses.value.push(response)
+    }).pipe(
+      tap(
+        response => this.expenses.value.push(response)
+      )
     );
-  }
-
-  addDebtPayment(debt: Debt) {
-    return this.http.post<Expense>(`${this.apiUrl}/expense/${this.currentGroupId}`, {
-      description: null,
-      amount: debt.amount,
-      timestamp: Date.now(),
-      payerId: debt.debtor.id,
-      involvements: [{
-        payeeId: debt.creditor.id,
-        weight: 1
-      }]
-    }).pipe(tap(
-      response => {
-        this.expenses.value.push(response);
-      }));
   }
 
   revertLastChange(expense: Expense) {
@@ -73,11 +61,12 @@ export class ExpenseService {
         expense.description = response.description;
         expense.involvements = response.involvements;
         expense.payer = response.payer;
-        expense.timestamp = response.timestamp; 
+        expense.timestamp = response.timestamp;
+        this.sortExpenses();
       }
     );
   }
-  
+
   editExpense(expense: Expense) {
     this.http.put<Expense>(`${this.apiUrl}/expense/${expense.id}`, {
       description: expense.description,
@@ -87,7 +76,7 @@ export class ExpenseService {
         return {
           payeeId: i.payee.id,
           weight: i.weight
-        }        
+        }
       }),
       timestamp: expense.timestamp
     }).subscribe(
@@ -97,7 +86,8 @@ export class ExpenseService {
         expense.description = response.description;
         expense.involvements = response.involvements;
         expense.payer = response.payer;
-        expense.timestamp = response.timestamp;       
+        expense.timestamp = response.timestamp;
+        this.sortExpenses();
       }
     );
   }
@@ -113,9 +103,20 @@ export class ExpenseService {
     )
   }
 
-  setCurrentExpense(expense: Expense): void {
+  downloadExpenseHistory(expense: Expense): void {
     this.http.get<ExpenseChange[]>(`${this.apiUrl}/expense/${expense.id}/history`).subscribe(
-      response => this.expenseChanges.next(response)
-    );    
+      response => {
+        this.expenseChanges.next(response);
+        this.sortChanges();
+      }
+    );
+  }
+
+  private sortExpenses(): void {
+    this.expenses.value.sort((a, b) => b.timestamp - a.timestamp);
+  }
+
+  private sortChanges(): void {
+    this.expenseChanges.value.sort((a, b) => a.changeTimestamp - b.changeTimestamp);
   }
 }

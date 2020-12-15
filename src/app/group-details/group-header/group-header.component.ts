@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ExpenseService } from 'src/app/expense.service';
 import { NewGroupDialogComponent } from 'src/app/group-list/new-group-dialog/new-group-dialog.component';
 import { GroupService } from 'src/app/group.service';
@@ -18,9 +18,10 @@ import { InviteUserDialogComponent } from '../member-list/invite-user-dialog/inv
   templateUrl: './group-header.component.html',
   styleUrls: ['./group-header.component.css']
 })
-export class GroupHeaderComponent implements OnInit {
+export class GroupHeaderComponent implements OnInit, OnDestroy {
+  private subscription: Subscription;
 
-  @Input() group: GroupDetails;
+  group: GroupDetails;
   isAuth$: Observable<boolean>;
 
   constructor(
@@ -34,6 +35,13 @@ export class GroupHeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAuth$ = this.userService.isAuthenticated$;
+    this.subscription = this.groupService.groupDetails$.subscribe(
+      group => this.group = group
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   optionsVisible(): boolean {

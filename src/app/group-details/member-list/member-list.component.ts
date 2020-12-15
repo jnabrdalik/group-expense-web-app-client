@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
+import { GroupService } from 'src/app/group.service';
 import { MemberService } from 'src/app/member.service';
 import { GroupDetails } from 'src/app/model/group';
 import { Member } from 'src/app/model/member';
@@ -11,25 +13,34 @@ import { EditMemberDialogComponent } from './edit-member-dialog/edit-member-dial
   templateUrl: './member-list.component.html',
   styleUrls: ['./member-list.component.css']
 })
-export class MemberListComponent implements OnInit {
+export class MemberListComponent implements OnInit, OnDestroy {
+  private subscription: Subscription;
 
-  @Input() group: GroupDetails;
+  members: Member[];
 
   constructor(
+    private groupService: GroupService,
     private memberService: MemberService,
     private dialog: MatDialog,
     private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
+    this.subscription = this.memberService.members$.subscribe(
+      members => this.members = members
+    );
   }
 
-  editMember(member: Member) {
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  onEditMember(member: Member) {
     const dialogRef = this.dialog.open(EditMemberDialogComponent, {
       data: {
         title: 'Edytuj osobę',
         editedMember: member,
-        members: this.group.members
+        members: this.members
       }
     });
 
@@ -42,7 +53,7 @@ export class MemberListComponent implements OnInit {
     );
   }
 
-  deleteMemberFromGroup(member: Member): void {
+  onDeleteMember(member: Member): void {
     this.memberService.deleteMember(member).subscribe(
       _ => this.snackbar.open('Członek grupy został usunięty.', "OK"),
       _ => this.snackbar.open('Nie można usunąć tego członka grupy!', "OK")
